@@ -7,7 +7,7 @@
  */
 int _put_buffer(char *c)
 {
-	return (write(stdout->_fileno, c, _strlen(c)));
+	return (write(STDIN_FILENO, c, _strlen(c)));
 }
 
 /**
@@ -17,6 +17,6 @@ int _put_buffer(char *c)
  */
 int _put_error(char *c)
 {
-	return (write(stderr->_fileno, c, _strlen(c)));
+	return (write(STDIN_FILENO, c, _strlen(c)));
 }
 
