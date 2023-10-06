@@ -1,4 +1,5 @@
 #include "main.h"
+
 /**
  * _tokenize - tokenize the input line
  * @term_f: terminal flag (isatty)
@@ -54,28 +55,48 @@ int _tokenize(int term_f, char **envp)
 
 int _execute(int span, char **cmds, char *input, char **envp)
 {
-	int pid, status;
+	int status;
+	pid_t pid;
+	char *err_msg = NULL;
+	(void)err_msg;
 
 	pid = fork();
 	if (pid == -1)
 	{
-		_put_error("fork failed");
 		_frees_buff(span, cmds, input);
+		perror("Error");
 		return (EXIT_FAILURE);
 	}
 	else if (pid == 0)
 	{
 		execve(*cmds, cmds, envp);
+		perror(_generate_error(cmds, span));
 		_frees_buff(span, cmds, input);
-		exit(1);
+		exit(EXIT_FAILURE);
 	}
 	if (waitpid(pid, &status, 0) == -1)
 	{
-		_put_error("waitpid failed");
+		perror("Error");
 		_frees_buff(span, cmds, input);
 		return (EXIT_FAILURE);
 	}
 	if (WIFEXITED(status))
 		_frees_buff(span, cmds, input);
 	return (EXIT_SUCCESS);
+}
+
+/**
+ * generate_error - generate error message
+ * @span: number of tokens - 1 (or index of last token)
+ * @cmds: array of tokens/commands
+ * Return:
+ * */
+char *_generate_error(char **cmds, int span)
+{
+	char *err_msg = malloc(100);
+
+	strcpy(err_msg, cmds[0]);
+	strcat(err_msg, ": ");
+	strcat(err_msg, _itoa(span));
+	return (err_msg);
 }

@@ -18,8 +18,6 @@ int main(int ac, char **av, char *envp[])
 		if (term_f)
 			_put_buffer("($) ");
 		err = _tokenize(term_f, envp);
-		if (err == EXIT_FAILURE)
-			_put_buffer("Not a shell command\n");
 		if (!term_f || err == -1)
 			break;
 	}
