@@ -6,6 +6,9 @@
 #include<sys/wait.h>
 #include <unistd.h>
 #include <stdarg.h>
+#include <sys/types.h>
+#include <dirent.h>
+
 /* dont need these yet */
 /* #include <errno.h> */
 /* #include <signal.h> */
@@ -25,8 +28,9 @@ int _strcmp(char *s1, char *s2);
 char *_strncat(char *dest, char *src, int n);
 void _frees_buff(int span, char **cmds, char *input);
 char *_strcpy(char *dest, char *src);
-int _tokenize(int term_f, char **envp);
-int _execute(int span, char **cmds, char *input, char **envp);
-char *_itoa(int x);
-char *_generate_error(char **cmds, int span);
+int _tokenize(int term_f, char **envp, char **av, size_t counter);
+int _execute(int span, char **cmds, char *input,
+		char **envp, char **av, size_t counter);
+char *_ultoa(size_t x);
+char *_generate_error(char **cmds, char **av, size_t counter);
 #endif /* HEADER */

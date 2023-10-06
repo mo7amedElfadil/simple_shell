@@ -4,10 +4,11 @@
  * _tokenize - tokenize the input line
  * @term_f: terminal flag (isatty)
  * @envp: environmental pointer
+ * @counter: the counter
  * Return: 1 when exit has been input
  *			0 otherwise
  */
-int _tokenize(int term_f, char **envp)
+int _tokenize(int term_f, char **envp, char **av, size_t counter)
 {
 	int i = 0;
 	size_t len = 120, l = 0, x = 0;
@@ -24,6 +25,11 @@ int _tokenize(int term_f, char **envp)
 	x = strcspn(input, " ");
 	cmds[i] = malloc(10);
 	token =  strtok(input, " \t\r\n\v\f");
+	if (!token)
+	{
+		_frees_buff(i, cmds, input);
+		return (1);
+	}
 	_strcpy(cmds[i], token);
 	if (x < l)
 	{
@@ -41,11 +47,11 @@ int _tokenize(int term_f, char **envp)
 		}
 	}
 	cmds[i + 1] = NULL;
-	return (_execute(i, cmds, input, envp));
+	return (_execute(i, cmds, input, envp, av, counter));
 }
 /**
  * _execute - execute the commands
- * @span: number of tokens - 1 (or index of last token)
+ * @counter: the counter
  * @cmds: array of tokens/commands
  * @input: input string from getline()
  * @envp: environmental pointer
@@ -53,7 +59,8 @@ int _tokenize(int term_f, char **envp)
  *			0 otherwise
  */
 
-int _execute(int span, char **cmds, char *input, char **envp)
+int _execute(int span, char **cmds, char *input,
+		char **envp, char **av, size_t counter)
 {
 	int status;
 	pid_t pid;
@@ -70,7 +77,7 @@ int _execute(int span, char **cmds, char *input, char **envp)
 	else if (pid == 0)
 	{
 		execve(*cmds, cmds, envp);
-		perror(_generate_error(cmds, span));
+		perror(_generate_error(cmds, av, counter));
 		_frees_buff(span, cmds, input);
 		exit(EXIT_FAILURE);
 	}
@@ -87,16 +94,18 @@ int _execute(int span, char **cmds, char *input, char **envp)
 
 /**
  * generate_error - generate error message
- * @span: number of tokens - 1 (or index of last token)
+ * @counter: the counter
  * @cmds: array of tokens/commands
  * Return:
  * */
-char *_generate_error(char **cmds, int span)
+char *_generate_error(char **cmds, char **av, size_t counter)
 {
 	char *err_msg = malloc(100);
 
-	strcpy(err_msg, cmds[0]);
+	strcpy(err_msg, av[0]);
 	strcat(err_msg, ": ");
-	strcat(err_msg, _itoa(span));
+	strcat(err_msg, _ultoa(counter));
+	strcat(err_msg, ": ");
+	strcat(err_msg, cmds[0]);
 	return (err_msg);
 }
