@@ -8,12 +8,12 @@
  */
 int _tokenize(int term_f, char **envp)
 {
-	int i = 0, j = 0;
+	int i = 0;
 	size_t len = 120, l = 0, x = 0;
 	char *input = malloc(len), *token;
 	char **cmds = malloc(sizeof(*cmds) * 10);
 
-	i = 0, j = 0;
+	(void)term_f;
 	l = getline(&input, &len, stdin);
 	if (!strncmp(input, "exit", 4))
 	{
