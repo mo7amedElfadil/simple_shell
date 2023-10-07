@@ -8,7 +8,8 @@
 #include <stdarg.h>
 #include <sys/types.h>
 #include <dirent.h>
-
+#include <errno.h>
+#include <stddef.h>
 /* dont need these yet */
 /* #include <errno.h> */
 /* #include <signal.h> */
@@ -25,6 +26,7 @@ void *_realloc(void *ptr, unsigned int old_size, unsigned int new_size);
 int _strlen(char *s);
 char *_strcat(char *dest, char *src);
 int _strcmp(char *s1, char *s2);
+char *_strstr(char *haystack, char *needle);
 char *_strncat(char *dest, char *src, int n);
 void _frees_buff(int span, char **cmds, char *input);
 char *_strcpy(char *dest, char *src);
