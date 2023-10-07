@@ -31,6 +31,7 @@ char *_strncat(char *dest, char *src, int n);
 void _frees_buff(int span, char **cmds, char *input);
 char *_strcpy(char *dest, char *src);
 int _tokenize(int term_f, char **envp, char **av, size_t counter);
+char *cmd_path(char **envp, char *cmd);
 int _execute(int span, char **cmds, char *input,
 		char **envp, char **av, size_t counter);
 char *_ultoa(size_t x);
