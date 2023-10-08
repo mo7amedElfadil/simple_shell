@@ -13,7 +13,7 @@
  */
 int cd_cmd(int argc, char *argv[], char *envp[])
 {
-	int i = 0, err_OPWD = 0, err_PWD = 0;
+	int err_OPWD = 0, err_PWD = 0;
 	char *en_v_OPWD = NULL, *en_v_PWD = NULL, *en_v_HOME = NULL;
 	char *F_argv = *(argv + 1), *S_argv = *(argv + 2);
 
@@ -50,7 +50,7 @@ int cd_cmd(int argc, char *argv[], char *envp[])
 			perror("Error");
 	}
 	else
-		errno = EINVAL, perror("Error");
+		errno = EINVAL, perror("Error"), errno = 0;
 	return (0);
 }
 
@@ -74,4 +74,23 @@ char *get_envalue(char *var, char **envp, int len)
 	token = strtok(NULL, "=");
 	return (token);
 }
-
+/**
+ * cd_cmd_dd - dd
+ * en_v_PWD: pwd
+ * Return: path
+ */
+char *cd_cmd_dd(char *en_v_PWD)
+{
+	int x = _strlen(en_v_PWD), i = 0;
+	x--;
+	do
+	{
+		if (!i && en_v_PWD[x - i] == '/')
+			en_v_PWD[x - i] = 0, i++;
+		else
+			en_v_PWD[x - i] = 0;
+		i++;
+	} while ( i < x && en_v_PWD[x - i] != '/');
+	en_v_PWD[x - i] = 0;
+	return (en_v_PWD);
+}
