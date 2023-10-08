@@ -5,7 +5,7 @@
  * @envp: envirement paramaters.
  * @cmd: the commands we search for.
  * Return: the path for the cmd if it is found
- * and NULL
+ * and NULL if not found
  */
 char *cmd_path(char **envp, char *cmd)
 {
@@ -14,13 +14,9 @@ char *cmd_path(char **envp, char *cmd)
 	DIR *dir;
 	struct dirent *entity;
 
-	errno = 0;
-
-	while (_strncmp(en[i], "PATH=", 5))
+	while (_strncmp(envp[i], "PATH", 4) && envp[i])
 		i++;
-
-
-	token = strtok(en[i], delim);
+	token = strtok(envp[i], delim);
 	while ((token = strtok(NULL, delim)))
 	{
 		dir = opendir(token);
@@ -28,20 +24,18 @@ char *cmd_path(char **envp, char *cmd)
 		{
 			while ((entity = readdir(dir)))
 			{
-				if ((_strncmp(entity->d_name, ".", 1)
-							|| _strncmp(entity->d_name, "..", 1)
-							&& !_strcmp(entity->d_name, cmd)))
+				if (((_strncmp(entity->d_name, ".", 1)
+							|| _strncmp(entity->d_name, "..", 2))
+							&& (!_strcmp(entity->d_name, cmd))))
 				{
-					errno = 0;
 					closedir(dir);
+					errno = 0;
 					return (token);
 				}
 			}
+			closedir(dir);
 		}
 	}
-
-
-	errno = ENOENT;
-	closedir(dir);
+	errno = 0;
 	return (NULL);
 }

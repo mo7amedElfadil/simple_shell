@@ -9,4 +9,23 @@ int _put_buffer(char *c)
 	return (write(STDOUT_FILENO, c, _strlen(c)));
 }
 
+/**
+ * _generate_error - generate error message
+ * @counter: the counter
+ * @cmds: array of tokens/commands
+ * @av: argument vector
+ * Return: error message
+ */
+char *_generate_error(char **cmds, char **av, size_t counter)
+{
+	char *err_msg = malloc(100), *ul = NULL;
 
+	_strcpy(err_msg, av[0]);
+	_strcat(err_msg, ": ");
+	ul = _ultoa(counter);
+	_strcat(err_msg, ul);
+	_strcat(err_msg, ": ");
+	_strcat(err_msg, cmds[0]);
+	free(ul);
+	return (err_msg);
+}

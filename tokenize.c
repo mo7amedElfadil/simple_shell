@@ -13,9 +13,9 @@
 int _tokenize(int term_f, char **envp, char **av, size_t counter)
 {
 	int i = 0, l = 0, x = 0;
-	size_t len = 120;
+	size_t len = BUFF;
 	char *input = malloc(len), *token;
-	char **cmds = malloc(sizeof(*cmds) * 10);
+	char **cmds = malloc(sizeof(*cmds) * BUFF);
 
 	(void)term_f;
 	l = getline(&input, &len, stdin);
@@ -23,13 +23,15 @@ int _tokenize(int term_f, char **envp, char **av, size_t counter)
 	{
 		if (l < 0 && term_f)
 			_put_buffer("\n");
+		x = exit_handler(input);
 		free(input), free(cmds);
 		fflush(stdin);
+		exit(x);
 		return (-1);
 	}
 	x = strcspn(input, " ");
-	cmds[i] = malloc(10);
 	token =  strtok(input, " \t\r\n\v\f");
+	cmds[i] = malloc(_strlen(token) + 1);
 	if (!token)
 	{
 		_frees_buff(i, cmds, input);
@@ -47,76 +49,56 @@ int _tokenize(int term_f, char **envp, char **av, size_t counter)
 				i--;
 				break;
 			}
-			cmds[i] = malloc(10), _strcpy(cmds[i], token);
+			cmds[i] = malloc(_strlen(token) + 1), _strcpy(cmds[i], token);
 		}
 	}
 	cmds[i + 1] = NULL;
-	return (_execute(i, cmds, input, envp, av, counter));
-}
-/**
- * _execute - execute the commands
- * @span: number of tokens - 1 (or index of last token)
- * @cmds: array of tokens/commands
- * @input: input string from getline()
- * @envp: environmental pointer
- * @av: argument vector
- * @counter: the counter
- * Return: -1 when execve fails
- *			0 otherwise
- */
 
-int _execute(int span, char **cmds, char *input,
-		char **envp, char **av, size_t counter)
-{
-	int status;
-	pid_t pid;
-	char *err_msg = NULL;
+	if (!term_f)
+	{
+		_execute(i, cmds, input, envp, av, counter);
+		x =	_tokenize(term_f, envp, av, counter);
+		return (x);
 
-	pid = fork();
-	if (pid == -1)
-	{
-		_frees_buff(span, cmds, input);
-		perror("Error");
-		return (EXIT_FAILURE);
 	}
-	else if (pid == 0)
-	{
-		execve(*cmds, cmds, envp);
-		err_msg = _generate_error(cmds, av, counter);
-		perror(err_msg);
-		free(err_msg);
-		_frees_buff(span, cmds, input);
-
-		exit(EXIT_FAILURE);
-	}
-	if (waitpid(pid, &status, 0) == -1)
-	{
-		perror("Error");
-		_frees_buff(span, cmds, input);
-		return (EXIT_FAILURE);
-	}
-	if (WIFEXITED(status))
-		_frees_buff(span, cmds, input);
-	return (EXIT_SUCCESS);
+		return (_execute(i, cmds, input, envp, av, counter));
 }
 
-/**
- * _generate_error - generate error message
- * @counter: the counter
- * @cmds: array of tokens/commands
- * @av: argument vector
- * Return: error message
- */
-char *_generate_error(char **cmds, char **av, size_t counter)
+int exit_handler(char* input)
 {
-	char *err_msg = malloc(100), *ul = NULL;
+	char *token;
 
-	strcpy(err_msg, av[0]);
-	strcat(err_msg, ": ");
-	ul = _ultoa(counter);
-	strcat(err_msg, ul);
-	strcat(err_msg, ": ");
-	strcat(err_msg, cmds[0]);
-	free(ul);
-	return (err_msg);
+	token = strtok(input, " \t\r\n\v\f");
+	token = strtok(NULL, " \t\r\n\v\f");
+	if (token)
+	{
+		return (_atoi(token));
+	}
+	return (0);
+
+}
+/**
+ * _atoi - converts string to an integer
+ * @s: string pointer
+ *
+ * Return: 0 if there're no numbers in the string,
+ * otherwise return the integer
+ */
+int _atoi(char *s)
+{
+	unsigned int num = 0, n_count = 0;
+
+	while (*s)
+	{
+		if (*s == ';')
+			break;
+		if (*s == '-')
+			n_count++;
+		if (*s >= 48 && *s <= 57)
+			num = (num * 10) + (*s - 48);
+		s++;
+
+	}
+
+	return (n_count % 2 == 0 ? num : -num);
 }

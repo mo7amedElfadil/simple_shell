@@ -16,7 +16,7 @@
 
 /* Important! Delete comment!! */
 #ifndef BUFF
-#define BUFF 1024
+#define BUFF 120
 #endif
 /* your protos goes here */
 int _put_buffer(char *);
@@ -26,6 +26,7 @@ void *_realloc(void *ptr, unsigned int old_size, unsigned int new_size);
 int _strlen(char *s);
 char *_strcat(char *dest, char *src);
 int _strcmp(char *s1, char *s2);
+int _strncmp(char *s1, char *s2, int n);
 char *_strstr(char *haystack, char *needle);
 char *_strncat(char *dest, char *src, int n);
 void _frees_buff(int span, char **cmds, char *input);
@@ -36,4 +37,6 @@ int _execute(int span, char **cmds, char *input,
 		char **envp, char **av, size_t counter);
 char *_ultoa(size_t x);
 char *_generate_error(char **cmds, char **av, size_t counter);
+int exit_handler(char* input);
+int _atoi(char *s);
 #endif /* HEADER */
