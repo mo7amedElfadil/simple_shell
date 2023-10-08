@@ -39,3 +39,27 @@ char *cmd_path(char **envp, char *cmd)
 	errno = 0;
 	return (NULL);
 }
+
+/**
+ * _path_cat - concatinate path with command
+ * @envp: environmental pointer
+ * @cmds: commands pointer
+ */
+void _path_cat(char **envp, char **cmds)
+{
+	char *token = NULL;
+
+		token = cmd_path(envp, cmds[0]);
+			if (token)
+			{
+				char *path = NULL;
+
+				path = malloc(_strlen(cmds[0]) + 1), _strcpy(path, cmds[0]);
+				cmds[0] = _realloc(cmds[0], strlen(cmds[0]) + 1,
+						_strlen(cmds[0]) + _strlen(token) + 2);
+				_strcpy(cmds[0], token), _strcat(cmds[0], "/");
+				_strcat(cmds[0], path), free(path);
+			}
+
+
+}

@@ -33,10 +33,11 @@ void _frees_buff(int span, char **cmds, char *input);
 char *_strcpy(char *dest, char *src);
 int _tokenize(int term_f, char **envp, char **av, size_t counter);
 char *cmd_path(char **envp, char *cmd);
+void _path_cat(char **envp, char **cmds);
 int _execute(int span, char **cmds, char *input,
 		char **envp, char **av, size_t counter);
 char *_ultoa(size_t x);
 char *_generate_error(char **cmds, char **av, size_t counter);
-int exit_handler(char* input);
+void exit_handler(int line, int term_f, char **cmds, char *input);
 int _atoi(char *s);
 #endif /* HEADER */

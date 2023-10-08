@@ -27,19 +27,9 @@ int _execute(int span, char **cmds, char *input,
 	}
 	else if (pid == 0)
 	{
-		char *token = NULL, *path = NULL;
-
 		if (*cmds[0] != '.' && *cmds[0] != '/')
 		{
-			token = cmd_path(envp, cmds[0]);
-			if (token)
-			{
-				path = malloc(_strlen(cmds[0]) + 1), _strcpy(path, cmds[0]);
-				cmds[0] = _realloc(cmds[0], strlen(cmds[0]) + 1,
-						_strlen(cmds[0]) + _strlen(token) + 2);
-				_strcpy(cmds[0], token), _strcat(cmds[0], "/");
-				_strcat(cmds[0], path), free(path);
-			}
+			_path_cat(envp, cmds);
 		}
 
 		execve(*cmds, cmds, envp);

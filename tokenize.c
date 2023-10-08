@@ -1,5 +1,4 @@
 #include "main.h"
-#include <stdio.h>
 
 /**
  * _tokenize - tokenize the input line
@@ -12,33 +11,24 @@
  */
 int _tokenize(int term_f, char **envp, char **av, size_t counter)
 {
-	int i = 0, l = 0, x = 0;
+	int i = 0, line = 0, delimited = 0;
 	size_t len = BUFF;
 	char *input = malloc(len), *token;
 	char **cmds = malloc(sizeof(*cmds) * BUFF);
 
-	(void)term_f;
-	l = getline(&input, &len, stdin);
-	if (l < 0 || !strncmp(input, "exit", 4))
-	{
-		if (l < 0 && term_f)
-			_put_buffer("\n");
-		x = exit_handler(input);
-		free(input), free(cmds);
-		fflush(stdin);
-		exit(x);
-		return (-1);
-	}
-	x = strcspn(input, " ");
+	line = getline(&input, &len, stdin);
+	if (line < 0 || !strncmp(input, "exit", 4))
+		exit_handler(line, term_f, cmds, input);
+	delimited = strcspn(input, " ");
 	token =  strtok(input, " \t\r\n\v\f");
-	cmds[i] = malloc(_strlen(token) + 1);
 	if (!token)
 	{
-		_frees_buff(i, cmds, input);
+		_frees_buff(-1, cmds, input);
 		return (1);
 	}
+	cmds[i] = malloc(_strlen(token) + 1);
 	_strcpy(cmds[i], token);
-	if (x < l)
+	if (delimited < line)
 	{
 		while (cmds[i])
 		{
@@ -53,29 +43,38 @@ int _tokenize(int term_f, char **envp, char **av, size_t counter)
 		}
 	}
 	cmds[i + 1] = NULL;
-
 	if (!term_f)
 	{
 		_execute(i, cmds, input, envp, av, counter);
-		x =	_tokenize(term_f, envp, av, counter);
-		return (x);
-
+		return (_tokenize(term_f, envp, av, counter));
 	}
 		return (_execute(i, cmds, input, envp, av, counter));
 }
 
-int exit_handler(char* input)
+/**
+ * exit_handler - Handles exit status
+ * @line: return value of getline. Determines its exit status
+ *		and used to know if ctrl + d or EOF was entered
+ * @term_f: terminal flag (isatty)
+ * @cmds: array of tokens/commands
+ * @input: input string from getline()
+ */
+void exit_handler(int line, int term_f, char **cmds, char *input)
 {
-	char *token;
+	char *token = NULL;
+	int ex = 0;
 
-	token = strtok(input, " \t\r\n\v\f");
-	token = strtok(NULL, " \t\r\n\v\f");
-	if (token)
+	if (line < 0 && term_f)
+		_put_buffer("\n");
+	if (line != -1)
 	{
-		return (_atoi(token));
+		token = strtok(input, " \t\r\n\v\f");
+		token = strtok(NULL, " \t\r\n\v\f");
 	}
-	return (0);
-
+	if (token)
+		ex = _atoi(token);
+	free(input), free(cmds);
+	exit(ex);
 }
 /**
  * _atoi - converts string to an integer
@@ -90,8 +89,6 @@ int _atoi(char *s)
 
 	while (*s)
 	{
-		if (*s == ';')
-			break;
 		if (*s == '-')
 			n_count++;
 		if (*s >= 48 && *s <= 57)
@@ -102,3 +99,5 @@ int _atoi(char *s)
 
 	return (n_count % 2 == 0 ? num : -num);
 }
+
+
