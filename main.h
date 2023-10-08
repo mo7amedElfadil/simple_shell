@@ -40,4 +40,8 @@ char *_ultoa(size_t x);
 char *_generate_error(char **cmds, char **av, size_t counter);
 void exit_handler(int line, int term_f, char **cmds, char *input);
 int _atoi(char *s);
+
+char *get_envalue(char *var, char **envp, int len);
+int cd_cmd(int argc, char *argv[], char *envp[]);
+
 #endif /* HEADER */
