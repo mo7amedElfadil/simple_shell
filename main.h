@@ -44,4 +44,8 @@ int _atoi(char *s);
 char *get_envalue(char *var, char **envp, int len);
 int cd_cmd(int argc, char *argv[], char *envp[]);
 char *cd_cmd_dd(char *en_v_PWD);
+
+int _setenv(char *var, char *val, int owr, char **envp);
+int _unsetenv(char *var, char **envp);
+
 #endif /* HEADER */
