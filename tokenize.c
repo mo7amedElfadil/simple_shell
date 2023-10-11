@@ -19,7 +19,7 @@ int _tokenize(int term_f, char **envp, char **av, size_t counter)
 	line = getline(&input, &len, stdin);
 	if (line < 0 || !strncmp(input, "exit", 4))
 		exit_handler(line, term_f, cmds, input);
-	delimited = strcspn(input, " ");
+	delimited = strcspn(input, " "); /* replace function with custom */
 	token =  strtok(input, " \t\r\n\v\f");
 	if (!token)
 	{

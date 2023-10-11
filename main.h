@@ -47,5 +47,31 @@ char *cd_cmd_dd(char *en_v_PWD);
 
 int _setenv(char *var, char *val, int owr, char **envp);
 int _unsetenv(char *var, char **envp);
+#ifndef LIST_H
+#define LIST_H
+/**
+ * struct list_s - singly linked list
+ * @str: string - (malloc'ed string)
+ * @len: length of the string
+ * @next: points to the next node
+ *
+ * Description: singly linked list node structure
+ */
+typedef struct list_cmd
+{
+	char *cmd;
+	char *linker;
+	struct list_cmd *next;
+} list_c;
 
+/* Function prototypes */
+size_t print_list(list_c *h);
+list_c *add_node(list_c **head, char *str);
+list_c *add_node_end(list_c **head, char *str);
+void free_list(list_c *head);
+list_c *add_nodeint(list_c **head, int n);
+
+#endif
 #endif /* HEADER */
+
+
