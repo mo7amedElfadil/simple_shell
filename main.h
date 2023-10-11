@@ -41,12 +41,14 @@ char *_generate_error(char **cmds, char **av, size_t counter);
 void exit_handler(int line, int term_f, char **cmds, char *input);
 int _atoi(char *s);
 
-char *get_envalue(char *var, char **envp, int len);
 int cd_cmd(int argc, char *argv[], char *envp[]);
 char *cd_cmd_dd(char *en_v_PWD);
+char *get_envalue(char *var, char **envp, int len);
 
+int _setenv_cmd(int argc, char **argv, char **envp);
 int _setenv(char *var, char *val, int owr, char **envp);
 int _unsetenv(char *var, char **envp);
+void print_envp(char **envp, char *var);
 #ifndef LIST_H
 #define LIST_H
 /**
@@ -64,6 +66,7 @@ typedef struct list_cmd
 	struct list_cmd *next;
 } list_c;
 
+
 /* Function prototypes */
 size_t print_list(list_c *h);
 list_c *add_node(list_c **head, char *str);
@@ -71,7 +74,10 @@ list_c *add_node_end(list_c **head, char *str);
 void free_list(list_c *head);
 list_c *add_nodeint(list_c **head, int n);
 
-#endif
+
+
+
+
 #endif /* HEADER */
 
 
