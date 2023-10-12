@@ -14,9 +14,36 @@
 int _execute(int span, char **cmds, char *input,
 		char **envp, char **av, size_t counter)
 {
-	int status;
+	int status, i = 0, a = 0;
 	pid_t pid;
 	char *err_msg = NULL;
+
+	while (cmds[i])
+		i++;
+	if (strcmp(cmds[0], "cd") == 0)
+	{
+		if (cd_cmd(i, cmds, envp) == -1)
+			printf("cannot execute built-in cmd\n");
+		a = 1;
+	}
+	else if (strcmp(cmds[0], "env") == 0)
+		print_envp(envp, NULL), a = 1;
+	else if (strcmp(cmds[0], "setenv") == 0)
+	{
+		printf("--- seten --- %d\n", i);
+		if (_setenv_cmd(i, cmds, envp) == -1)
+			printf("cannot execute built-in cmd\n");
+		a = 1;
+	}
+	else if (strcmp(cmds[0], "unsetenv") == 0)
+	{
+		printf("%d\n", i);
+		if (_unsetenv_cmd(i, cmds, envp) == -1)
+			printf("cannot execute built-in cmd\n");
+		a = 1;
+	}
+	if (a)
+		return (EXIT_SUCCESS);
 
 	pid = fork();
 	if (pid == -1)
@@ -31,7 +58,6 @@ int _execute(int span, char **cmds, char *input,
 		{
 			_path_cat(envp, cmds);
 		}
-
 		execve(*cmds, cmds, envp);
 		err_msg = _generate_error(cmds, av, counter);
 		perror(err_msg), errno = 0;

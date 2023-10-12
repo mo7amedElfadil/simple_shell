@@ -1,5 +1,6 @@
-#ifndef HEADER
-#define HEADER
+#ifndef HEADER_H
+#define HEADER_H
+
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
@@ -49,8 +50,8 @@ int _setenv_cmd(int argc, char **argv, char **envp);
 int _setenv(char *var, char *val, int owr, char **envp);
 int _unsetenv(char *var, char **envp);
 void print_envp(char **envp, char *var);
-#ifndef LIST_H
-#define LIST_H
+int _unsetenv_cmd(int argc, char **argv, char **envp);
+
 /**
  * struct list_s - singly linked list
  * @str: string - (malloc'ed string)

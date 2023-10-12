@@ -40,6 +40,7 @@ int _tokenize(int term_f, char **envp, char **av, size_t counter)
 				break;
 			}
 			cmds[i] = malloc(_strlen(token) + 1), _strcpy(cmds[i], token);
+			printf("%s\n", cmds[i]);
 		}
 	}
 	cmds[i + 1] = NULL;
