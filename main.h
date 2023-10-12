@@ -41,6 +41,7 @@ char *_generate_error(char **cmds, char **av, size_t counter);
 void exit_handler(int line, int term_f, char **cmds, char *input);
 int _atoi(char *s);
 
+char *_itoa(int x);
 int cd_cmd(int argc, char *argv[], char *envp[]);
 char *cd_cmd_dd(char *en_v_PWD);
 char *get_envalue(char *var, char **envp, int len);
@@ -49,6 +50,40 @@ int _setenv_cmd(int argc, char **argv, char **envp);
 int _setenv(char *var, char *val, int owr, char **envp);
 int _unsetenv(char *var, char **envp);
 void print_envp(char **envp, char *var);
+int _put_buff(char c);
+
+
+void make_void(int num, ...);
+int choose_mode(int span, char **cmds, char **envp);
+
+int print_pid(int span, char **cmds, char **envp);
+
+int print_err(int span, char **cmds, char **envp);
+void alias(char **cmds, int span);
+/**
+ * struct _builtin - builtin function struct
+ * @cmd: string specifier
+ * @func: function pointer
+ */
+typedef struct _builtin
+{
+	char *cmd;
+	int (*func)(int , char **, char **);
+} _built;
+
+/* int (*)(int,  char **, char **) */
+/**
+ * struct _intptr - void struct
+ * @c: character specifier
+ * @func: function pointer
+ */
+typedef struct _intptr
+{
+	char *c;
+	void *(*func)(int *, char *);
+} _ip;
+
+
 #ifndef LIST_H
 #define LIST_H
 /**
@@ -75,6 +110,7 @@ void free_list(list_c *head);
 list_c *add_nodeint(list_c **head, int n);
 
 
+#endif /* LIST_H */
 
 
 

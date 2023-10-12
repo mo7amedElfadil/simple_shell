@@ -14,7 +14,7 @@
 int _execute(int span, char **cmds, char *input,
 		char **envp, char **av, size_t counter)
 {
-	int status;
+	int status, flag = 0;
 	pid_t pid;
 	char *err_msg = NULL;
 
@@ -29,12 +29,16 @@ int _execute(int span, char **cmds, char *input,
 	{
 		if (*cmds[0] != '.' && *cmds[0] != '/')
 		{
-			_path_cat(envp, cmds);
+			if ((flag = choose_mode(span, cmds, envp)))
+				_path_cat(envp, cmds);
 		}
 
-		execve(*cmds, cmds, envp);
-		err_msg = _generate_error(cmds, av, counter);
-		perror(err_msg), errno = 0;
+		if (flag)
+		{
+			execve(*cmds, cmds, envp);
+			err_msg = _generate_error(cmds, av, counter);
+			perror(err_msg);
+		}
 		free(err_msg);
 		_frees_buff(span, cmds, input);
 
@@ -49,6 +53,52 @@ int _execute(int span, char **cmds, char *input,
 	if (WIFEXITED(status))
 		_frees_buff(span, cmds, input);
 	return (EXIT_SUCCESS);
+}
+
+/*
+ * chose_mode - chose the execution mode
+ */
+int choose_mode(int span, char **cmds, char **envp)
+{
+	int i = 0;
+	_built builtins[] =
+	{{"cd", cd_cmd}, {"$$", print_pid},{"$?", print_err},{NULL, NULL},};
+	/*{"env", (void(*)(void **))print_envp},
+	 * remember to fix protos for this after checking with red*/
+		/* {"setenv", (void(*)(void **))_setenv_cmd},
+		 * {"unsetenv", (void(*)(void **))_unsetenv}, */
+		/* {"alias", (void(*)(void **))alias} */
+	for (i = 0; builtins[i].cmd; i++)
+	{
+		if (!strcmp(*cmds, builtins[i].cmd))
+		{
+			switch (i)
+			{
+				case 0:
+					cd_cmd(span, cmds, envp);
+					return 0;
+				case 1:
+					print_pid(span, cmds, envp);
+					return 0;
+				case 2:
+					print_err(span, cmds, envp);
+					return 0;
+				/* case 3: */
+				/* 	print_envp(envp, NULL); */
+				/* 	return 0; */
+				/* case 4: */
+				/* 	_setenv_cmd(span, cmds, envp); */
+				/* 	return 0; */
+				/* case 5: */
+				/* 	_unsetenv(cmds[1], envp); */
+				/* 	return 0; */
+				/* case 6: */
+				/* 	alias(cmds, span); */
+				/* 	return 0; */
+			}
+		}
+	}
+	return 1;
 }
 
 

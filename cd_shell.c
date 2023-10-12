@@ -13,8 +13,7 @@
  */
 int cd_cmd(int argc, char *argv[], char *envp[])
 {
-	int err_OPWD = 0, err_PWD = 0;
-	char *en_v_OPWD = NULL, *en_v_PWD = NULL, *en_v_HOME = NULL, *en_v_tem = NULL;
+	char *en_v_OPWD = NULL, *en_v_PWD = NULL, *en_v_HOME = NULL;
 	char *F_argv = *(argv + 1), *S_argv = *(argv + 2);
 
 	errno = 0;
@@ -105,7 +104,7 @@ void print_envp(char **envp, char *var)
 {
 	int j, i = 0, a = 0, len = _strlen(var);
 
-	if (val == NULL)
+	if (var == NULL)
 		a = 1;
 	while (envp[i])
 		if (a)
