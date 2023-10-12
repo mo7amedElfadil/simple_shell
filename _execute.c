@@ -14,20 +14,31 @@
 int _execute(int span, char **cmds, char *input,
 		char **envp, char **av, size_t counter)
 {
-	int status, flag = 0;
+	int status, flag = 0, a = 0;
 	pid_t pid;
 	char *err_msg = NULL;
+
+	if (strcmp(cmds[0], "cd") == 0)
+		cd_cmd(0, cmds, envp), a = 1;
+	else if (strcmp(cmds[0], "env") == 0)
+		print_envp(envp, NULL), a = 1;
+	else if (strcmp(cmds[0], "setenv") == 0)
+		_setenv_cmd(0, cmds, envp), a = 1;
+	else if (strcmp(cmds[0], "unsetenv") == 0)
+		_unsetenv_cmd(0, cmds, envp), a = 1;
+	if (a)
+		return (EXIT_SUCCESS);
 
 	pid = fork();
 	if (pid == -1)
 	{
-		_frees_buff(span, cmds, input);
-		perror("Error");
+		_frees_buff(span, cmds, input), perror("Error");
 		return (EXIT_FAILURE);
 	}
 	else if (pid == 0)
 	{
 		if (*cmds[0] != '.' && *cmds[0] != '/')
+<<<<<<< HEAD
 		{
 			if ((flag = choose_mode(span, cmds, envp)))
 				_path_cat(envp, cmds);
@@ -46,14 +57,14 @@ int _execute(int span, char **cmds, char *input,
 	}
 	if (waitpid(pid, &status, 0) == -1)
 	{
-		perror("Error");
-		_frees_buff(span, cmds, input);
+		perror("Error"), _frees_buff(span, cmds, input);
 		return (EXIT_FAILURE);
 	}
 	if (WIFEXITED(status))
 		_frees_buff(span, cmds, input);
 	return (EXIT_SUCCESS);
 }
+
 
 /*
  * chose_mode - chose the execution mode
@@ -100,5 +111,6 @@ int choose_mode(int span, char **cmds, char **envp)
 	}
 	return 1;
 }
+
 
 

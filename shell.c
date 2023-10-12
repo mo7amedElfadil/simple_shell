@@ -4,12 +4,15 @@
  * main - entry point
  * @ac: argument counter
  * @av: argument vector
- * @envp: environmental point
+ * @envp_origin: environmental point
  * Return: 0
  */
-int main(int ac, char **av, char *envp[])
+int main(int ac, char **av, char *envp_origin[])
 {
 	size_t counter = 0;
+	char **envp = NULL;
+
+	envp = copy_envp_main(envp_origin);
 
 	(void)ac, (void)av;
 	while (1)
@@ -26,4 +29,30 @@ int main(int ac, char **av, char *envp[])
 			break;
 	}
 	return (0);
+}
+
+/**
+ * copy_envp_main - copy the envp variable in the main.
+ * @envp: the envirement variable list.
+ * Return: pointer to the new envirement variable list.
+ */
+char **copy_envp_main(char **envp)
+{
+	char **new_envp = NULL;
+	int i = 0;
+
+	while (envp[i])
+		i++;
+	if (i)
+	{
+		new_envp = malloc(sizeof(char *) * (i + 1));
+		if (!new_envp)
+			return (envp);
+		i = 0;
+		while (envp[i])
+			new_envp[i] = envp[i], i++;
+		new_envp[i] = NULL;
+		return (new_envp);
+	}
+	return (envp);
 }
