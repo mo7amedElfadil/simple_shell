@@ -4,13 +4,17 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
-#include<sys/wait.h>
 #include <unistd.h>
 #include <stdarg.h>
-#include <sys/types.h>
 #include <dirent.h>
-#include <errno.h>
 #include <stddef.h>
+
+#include<sys/wait.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <errno.h>
+#include <limits.h>
+
 /* dont need these yet */
 /* #include <errno.h> */
 /* #include <signal.h> */
@@ -44,19 +48,25 @@ int _atoi(char *s);
 
 int cd_cmd(int argc, char *argv[], char *envp[]);
 char *cd_cmd_dd(char *en_v_PWD);
+int cd_cmd__(char *target, char *previous, char **envp);
+int cd_cmd_sup(char *target, char *previous, char **envp);
+int is_v_path(const char *path);
+int cd_cmd_par(char *target, char **envp);
 char *get_envalue(char *var, char **envp, int len);
+
 
 int _setenv_cmd(int argc, char **argv, char **envp);
 int _setenv(char *var, char *val, int owr, char **envp);
 int _unsetenv(char *var, char **envp);
 void print_envp(char **envp, char *var);
 int _unsetenv_cmd(int argc, char **argv, char **envp);
+char **copy_envp_main(char **envp);
 
 /**
- * struct list_s - singly linked list
- * @str: string - (malloc'ed string)
- * @len: length of the string
- * @next: points to the next node
+ * struct list_cmd - singly linked list
+ * @cmd: pointer to  char.
+ * @linker: pointer to  char.
+ * @next: points to struct(next node).
  *
  * Description: singly linked list node structure
  */

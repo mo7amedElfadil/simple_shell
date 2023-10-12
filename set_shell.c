@@ -1,7 +1,7 @@
 #include "main.h"
 
 /**
- * _setenv_cmd - Initialize a new environment variable, modify an existing one.a
+ * _setenv_cmd - Initialize a new environment variable, modify an existing one.
  * using command line inside the simple shell.
  * @argc: tem for number of argument.
  * @argv: temporary variable for tokens.
@@ -10,23 +10,19 @@
  */
 int _setenv_cmd(int argc, char **argv, char **envp)
 {
+	argc = 0;
+
+	while (argv[argc])
+		argc++;
 	if (argc == 3)
 	{
 		if (_setenv(argv[1], argv[2], 1, envp) == -1)
-		{
-			printf("cannot set the variable\n");
 			return (-1);
-		}
-		else if (setenv(argv[1], argv[2], 1) == 0)
-			printf("set the variable\n");
 	}
 	else if (argc == 2)
 	{
 		if (_setenv(argv[1], "\0", 1, envp) == -1)
-		{
-			printf("cannot set the variable\n");
 			return (-1);
-		}
 	}
 	else
 	{
@@ -45,6 +41,10 @@ int _setenv_cmd(int argc, char **argv, char **envp)
  */
 int _unsetenv_cmd(int argc, char **argv, char **envp)
 {
+	argc = 0;
+
+	while (argv[argc])
+		argc++;
 	if (argc == 2)
 	{
 		if (_unsetenv(argv[1], envp) == -1)
@@ -89,60 +89,45 @@ int _unsetenv(char *var, char **envp)
  * @var: the variable to set.
  * @val: it value.
  * @owr: 1 to overwrite it, 0 creat if only does not exist.
- * @envp: envirement variable.
+ * @en: envirement variable.
  * Return: 0 if succeeded, -1 if in failure.
  */
-int _setenv(char *var, char *val, int owr, char **envp)
+int _setenv(char *var, char *val, int owr, char **en)
 {
 	int i, len = _strlen(var);
-	char *new_var = NULL, **new_envp = NULL;
+	char *n_var = NULL, **n_en = NULL;
 
-	for (i = 0; envp[i]; i++)
+	for (i = 0; en[i]; i++)
 	{
-		if (_strncmp(envp[i], var, len) == 0 && envp[i][_strlen(var)] == '=')
+		if (_strncmp(en[i], var, len) == 0 && en[i][_strlen(var)] == '=')
 		{
 			if (!owr)
 				return (0);
-			new_var = malloc(_strlen(var) + _strlen(val) + 2);
-			if (!new_var)
-				return (-1);
-
-			_strcpy(new_var, var), _strcat(new_var, "="), _strcat(new_var, val);
-			envp[i] = new_var;
-			return (0);
-		}
+			/* errno set to 0*/
+			n_var = malloc(_strlen(var) + _strlen(val) + 2), errno = 0;
+			if (!n_var)
+			{
+				perror("Error");
+				return (-1); }
+			_strcpy(n_var, var), _strcat(n_var, "="), _strcat(n_var, val);
+			en[i] = n_var;
+			return (0); }
 	}
-
-	new_var = malloc(_strlen(var) + _strlen(val) + 2);
-	if (!new_var)
+	n_var = malloc(_strlen(var) + _strlen(val) + 2);
+	if (!n_var)
 	{
-		return (-1);
-	}
-	_strcpy(new_var, var), _strcat(new_var, "="), _strcat(new_var, val);
-
-	new_envp = malloc(sizeof(char *) * (i + 2));
-	if (!new_envp)
+		perror("Error");
+		return (-1); }
+	_strcpy(n_var, var), _strcat(n_var, "="), _strcat(n_var, val);
+	n_en = malloc(sizeof(char *) * (i + 2));
+	if (!n_en)
 	{
-		free(new_var);
-		return (-1);
-	}
-	for (i = 0; envp[i]; i++)
-		new_envp[i] = envp[i], printf(" -- 1 -- new_envp[i] : %s || envp[i] : %s\n",new_envp[i] , envp[i]);
-
-	new_envp[i] = new_var;
-	new_envp[i + 1] = NULL;
-	envp = malloc(sizeof(char *) * (i + 2));
-	if (!envp)
-	{
-		free(new_var);
-		free(new_envp);
-		return (-1);
-	}
-	printf("new_envp[i] : %s || envp[i] : %s\n\n\n",new_envp[i] , envp[i]);
-	for (i = 0; new_envp[i]; i++)
-		envp[i] = new_envp[i], printf(" -- 1 -- envp[i] : %s || new_envp[i] : %s\n",envp[i] , new_envp[i]);
-	envp[i + 1] = NULL;
-	printf("envp[i] : %s || new_envp[i] : %s\n",envp[i] , new_envp[i]);
+		perror("Error"), free(n_var);
+		return (-1); }
+	for (i = 0; en[i]; i++)
+		n_en[i] = en[i];
+	n_en[i + 0] = n_var, n_en[i + 1] = NULL;
+	en = n_en;
 	return (0);
 }
 
@@ -178,3 +163,4 @@ char *get_envalue(char *var, char **envp, int len)
 	return (token);
 }
 
+	/*printf("en[i] : %s || n_en[i] : %s\n",en[i] , n_en[i]);*/
