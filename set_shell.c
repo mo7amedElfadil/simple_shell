@@ -111,6 +111,7 @@ int _setenv(char *var, char *val, int owr, char **en)
 				return (-1); }
 			_strcpy(n_var, var), _strcat(n_var, "="), _strcat(n_var, val);
 			en[i] = n_var;
+			/* , free(n_var) */
 			return (0); }
 	}
 	n_var = malloc(_strlen(var) + _strlen(val) + 2);
@@ -128,6 +129,7 @@ int _setenv(char *var, char *val, int owr, char **en)
 		n_en[i] = en[i];
 	n_en[i + 0] = n_var, n_en[i + 1] = NULL;
 	en = n_en;
+	/* free(n_en), free(n_var); */
 	return (0);
 }
 
@@ -138,7 +140,7 @@ int _setenv(char *var, char *val, int owr, char **en)
  *
  * @var: the variable name we search for.
  * @len: lent of the name of the env variable.
- * @envp: envirement variable.
+ * @envp: envirement variab	le.
  * Return: pointer the value, or NULL if allocation failed.
  */
 char *get_envalue(char *var, char **envp, int len)
@@ -146,21 +148,26 @@ char *get_envalue(char *var, char **envp, int len)
 	char *token = NULL, *envp_tem = NULL;
 	int i = 0;
 
-	while (_strncmp(envp[i], var, len) != 0)
+	while (envp[i] && strncmp(envp[i], var, len) != 0)
 		i++;
 	if (envp[i])
 	{
-		envp_tem = malloc(sizeof(char) * (_strlen(envp[i] + 1)));
+		char *result = NULL;
+		envp_tem = malloc(sizeof(char) * (_strlen(envp[i]) + 1));
 		if (!envp_tem)
 		{
 			return (NULL);
 		}
 		_strcpy(envp_tem, envp[i]);
-		token = strtok(envp_tem, "=");
+		strtok(envp_tem, "=");
 		token = strtok(NULL, "=");
+		result = malloc(_strlen(token) + 1);
+		_strcpy(result, token);
+		free(envp_tem);
+		return (result);
 	}
 	/*printf("token in get_envalue function is : %s\n", token);*/
-	return (token);
+	return (NULL);
 }
 
 	/*printf("en[i] : %s || n_en[i] : %s\n",en[i] , n_en[i]);*/

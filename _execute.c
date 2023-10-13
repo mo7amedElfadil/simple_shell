@@ -14,102 +14,100 @@
 int _execute(int span, char **cmds, char *input,
 		char **envp, char **av, size_t counter)
 {
-	int status, flag = 0, a = 0;
+	int status, flag = 0;
 	pid_t pid;
 	char *err_msg = NULL;
 
-	if (strcmp(cmds[0], "cd") == 0)
-		cd_cmd(0, cmds, envp), a = 1;
-	else if (strcmp(cmds[0], "env") == 0)
-		print_envp(envp, NULL), a = 1;
-	else if (strcmp(cmds[0], "setenv") == 0)
-		_setenv_cmd(0, cmds, envp), a = 1;
-	else if (strcmp(cmds[0], "unsetenv") == 0)
-		_unsetenv_cmd(0, cmds, envp), a = 1;
-	if (a)
-		return (EXIT_SUCCESS);
 
-	pid = fork();
-	if (pid == -1)
+	if (*cmds[0] != '.' && *cmds[0] != '/')
 	{
-		_frees_buff(span, cmds, input), perror("Error");
-		return (EXIT_FAILURE);
-	}
-	else if (pid == 0)
-	{
-		if (*cmds[0] != '.' && *cmds[0] != '/')
-<<<<<<< HEAD
+
+		if ((flag = choose_mode(span, cmds, envp)))
 		{
-			if ((flag = choose_mode(span, cmds, envp)))
-				_path_cat(envp, cmds);
+			_path_cat(envp, cmds);
+			_put_buffer(*cmds);
+			_put_buffer("\n");
 		}
-
-		if (flag)
+	}
+	if (flag)
+	{
+		pid = fork();
+		if (pid == -1)
+		{
+			_frees_buff(span, cmds, input), perror("Error");
+			return (EXIT_FAILURE);
+		}
+		else if (pid == 0)
 		{
 			execve(*cmds, cmds, envp);
+
 			err_msg = _generate_error(cmds, av, counter);
 			perror(err_msg);
+			free(err_msg);
+			if (envp)
+				_free_envp(envp);
+			_frees_buff(span, cmds, input);
+			exit(EXIT_FAILURE);
 		}
-		free(err_msg);
-		_frees_buff(span, cmds, input);
-
-		exit(EXIT_FAILURE);
+		if (waitpid(pid, &status, 0) == -1)
+		{
+			perror("Error"), _frees_buff(span, cmds, input);
+			return (EXIT_FAILURE);
+		}
+		if (WIFEXITED(status))
+		{
+			_frees_buff(span, cmds, input);
+		}
 	}
-	if (waitpid(pid, &status, 0) == -1)
-	{
-		perror("Error"), _frees_buff(span, cmds, input);
-		return (EXIT_FAILURE);
-	}
-	if (WIFEXITED(status))
-		_frees_buff(span, cmds, input);
 	return (EXIT_SUCCESS);
 }
-
 
 /*
  * chose_mode - chose the execution mode
  */
 int choose_mode(int span, char **cmds, char **envp)
 {
-	int i = 0;
+	int i = 0, j = (!_strcmp(*cmds, "echo") &&
+			(cmds[1] ?
+			((!_strcmp(cmds[1], "$$") ^ !_strcmp(cmds[1], "$?")))
+			? 1: 0: 0));
 	_built builtins[] =
-	{{"cd", cd_cmd}, {"$$", print_pid},{"$?", print_err},{NULL, NULL},};
-	/*{"env", (void(*)(void **))print_envp},
-	 * remember to fix protos for this after checking with red*/
-		/* {"setenv", (void(*)(void **))_setenv_cmd},
-		 * {"unsetenv", (void(*)(void **))_unsetenv}, */
-		/* {"alias", (void(*)(void **))alias} */
+	{{"cd", cd_cmd}, {"$$", print_pid},{"$?", print_err},
+		{"env", print_envp},{"setenv",_setenv_cmd},
+		{"unsetenv", _unsetenv_cmd}, {"alias", alias},
+		{NULL, NULL}};
+
 	for (i = 0; builtins[i].cmd; i++)
 	{
-		if (!strcmp(*cmds, builtins[i].cmd))
+		if (!strcmp(cmds[j], builtins[i].cmd))
 		{
 			switch (i)
 			{
 				case 0:
-					cd_cmd(span, cmds, envp);
-					return 0;
+					cd_cmd(span + 1, cmds, envp);
+					return (EXIT_SUCCESS);
 				case 1:
 					print_pid(span, cmds, envp);
-					return 0;
+					return (0);
 				case 2:
 					print_err(span, cmds, envp);
+					return (0);
+				case 3:
+					print_envp(span + 1, NULL, envp);
 					return 0;
-				/* case 3: */
-				/* 	print_envp(envp, NULL); */
-				/* 	return 0; */
-				/* case 4: */
-				/* 	_setenv_cmd(span, cmds, envp); */
-				/* 	return 0; */
-				/* case 5: */
-				/* 	_unsetenv(cmds[1], envp); */
-				/* 	return 0; */
-				/* case 6: */
-				/* 	alias(cmds, span); */
-				/* 	return 0; */
+				case 4:
+					_setenv_cmd(span + 1, cmds, envp);
+					return 0;
+				case 5:
+					_unsetenv_cmd(span + 1, cmds, envp);
+					return 0;
+				case 6:
+					alias(span, cmds, envp);
+					return 0;
 			}
 		}
 	}
-	return 1;
+	return (1);
 }
 
 

@@ -25,28 +25,37 @@
 #endif
 /* your protos goes here */
 int _put_buffer(char *);
-void _rev_string(char *s);
 int _put_error(char *);
+
 void *_realloc(void *ptr, unsigned int old_size, unsigned int new_size);
+
+void _rev_string(char *s);
 int _strlen(char *s);
 char *_strcat(char *dest, char *src);
 int _strcmp(char *s1, char *s2);
 int _strncmp(char *s1, char *s2, int n);
 char *_strstr(char *haystack, char *needle);
 char *_strncat(char *dest, char *src, int n);
-void _frees_buff(int span, char **cmds, char *input);
+char *_memcpy(char *dest, char *src, unsigned int n);
 char *_strcpy(char *dest, char *src);
+
+void _frees_buff(int span, char **cmds, char *input);
+void _free_envp(char **envp);
+void _free_cd(int n, ...);
+
 int _tokenize(int term_f, char **envp, char **av, size_t counter);
 char *cmd_path(char **envp, char *cmd);
 void _path_cat(char **envp, char **cmds);
 int _execute(int span, char **cmds, char *input,
 		char **envp, char **av, size_t counter);
 char *_ultoa(size_t x);
-char *_generate_error(char **cmds, char **av, size_t counter);
-void exit_handler(int line, int term_f, char **cmds, char *input);
 int _atoi(char *s);
-
 char *_itoa(int x);
+
+char *_generate_error(char **cmds, char **av, size_t counter);
+
+void exit_handler(int line, int term_f, char **cmds, char **envp, char *input);
+
 int cd_cmd(int argc, char *argv[], char *envp[]);
 char *cd_cmd_dd(char *en_v_PWD);
 int cd_cmd__(char *target, char *previous, char **envp);
@@ -59,7 +68,7 @@ char *get_envalue(char *var, char **envp, int len);
 int _setenv_cmd(int argc, char **argv, char **envp);
 int _setenv(char *var, char *val, int owr, char **envp);
 int _unsetenv(char *var, char **envp);
-void print_envp(char **envp, char *var);
+int print_envp(int span, char **var, char **envp);
 int _unsetenv_cmd(int argc, char **argv, char **envp);
 char **copy_envp_main(char **envp);
 int _put_buff(char c);
@@ -71,7 +80,7 @@ int choose_mode(int span, char **cmds, char **envp);
 int print_pid(int span, char **cmds, char **envp);
 
 int print_err(int span, char **cmds, char **envp);
-void alias(char **cmds, int span);
+int alias(int span, char **cmds, char **envp);
 /**
  * struct _builtin - builtin function struct
  * @cmd: string specifier

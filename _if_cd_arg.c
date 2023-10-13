@@ -10,6 +10,8 @@
 
 int cd_cmd__(char *target, char *previous, char **envp)
 {
+	char *pwd = "PWD";
+
 	if (chdir(target) == -1)
 	{
 		perror("Error");
@@ -22,7 +24,7 @@ int cd_cmd__(char *target, char *previous, char **envp)
 
 		if (_setenv("OLDPWD", previous, 1, envp) == -1)
 			return (-1);
-		print_envp(envp, "PWD");
+		print_envp(0, &pwd, envp);
 	}
 	return (0);
 }

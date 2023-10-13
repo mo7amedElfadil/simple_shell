@@ -28,6 +28,9 @@ int main(int ac, char **av, char *envp_origin[])
 		if (!term_f || err == -1)
 			break;
 	}
+	if (envp)
+		_free_envp(envp);
+
 	return (0);
 }
 
@@ -50,7 +53,10 @@ char **copy_envp_main(char **envp)
 			return (envp);
 		i = 0;
 		while (envp[i])
-			new_envp[i] = envp[i], i++;
+		{
+			new_envp[i] = malloc(_strlen(envp[i]) + 1);
+			_strcpy(new_envp[i], envp[i]), i++;
+		}
 		new_envp[i] = NULL;
 		return (new_envp);
 	}

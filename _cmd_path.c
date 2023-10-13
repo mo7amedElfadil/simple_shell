@@ -1,4 +1,5 @@
 #include "main.h"
+#include <linux/limits.h>
 
 /**
  * cmd_path - find the path for executable commands
@@ -10,33 +11,42 @@
 char *cmd_path(char **envp, char *cmd)
 {
 	int i = 0;
-	char *token = NULL, delim[] = "=:";
+	unsigned int len = 0;
+	char *token = NULL, delim[] = "=:", ENV[PATH_MAX];
 	DIR *dir;
 	struct dirent *entity;
 
 	while (_strncmp(envp[i], "PATH", 4) && envp[i])
 		i++;
-	token = strtok(envp[i], delim);
-	while ((token = strtok(NULL, delim)))
+	len = _strlen(envp[i]);
+	printf("%i\n", len);
+	if (len)
 	{
-		dir = opendir(token);
-		if (dir)
+		_memcpy(ENV, envp[i], len + 1);
+		token = strtok(ENV, delim);
+		while ((token = strtok(NULL, delim)))
 		{
-			while ((entity = readdir(dir)))
+			dir = opendir(token);
+			if (dir)
 			{
-				if (((_strncmp(entity->d_name, ".", 1)
-							|| _strncmp(entity->d_name, "..", 2))
-							&& (!_strcmp(entity->d_name, cmd))))
+				while ((entity = readdir(dir)))
 				{
-					closedir(dir);
-					errno = 0;
-					return (token);
+					if (((_strncmp(entity->d_name, ".", 1)
+									|| _strncmp(entity->d_name, "..", 2))
+								&& (!_strcmp(entity->d_name, cmd))))
+					{
+						char *result = malloc(_strlen(token) + 1);
+						_strcpy(result, token);
+						closedir(dir);
+						/* errno = 0; */
+						return (result);
+					}
 				}
+				closedir(dir);
 			}
-			closedir(dir);
 		}
 	}
-	errno = 0;
+	/* errno = 0; */
 	return (NULL);
 }
 
@@ -49,22 +59,22 @@ void _path_cat(char **envp, char **cmds)
 {
 	char *token = NULL;
 
-		token = cmd_path(envp, cmds[0]);
-			if (token)
-			{
-				char *path = NULL;
+	token = cmd_path(envp, cmds[0]);
+	if (token)
+	{
+		char *path = NULL;
 
-				path = malloc(_strlen(cmds[0]) + 1);
+		path = malloc(_strlen(cmds[0]) + 1);
 
-				_strcpy(path, cmds[0]);
+		_strcpy(path, cmds[0]);
 
-				cmds[0] = _realloc(cmds[0], strlen(cmds[0]) + 1,
-						_strlen(cmds[0]) + _strlen(token) + 2);
+		cmds[0] = _realloc(cmds[0], strlen(cmds[0]) + 1,
+				_strlen(cmds[0]) + _strlen(token) + 2);
 
-				_strcpy(cmds[0], token), _strcat(cmds[0], "/");
+		_strcpy(cmds[0], token), _strcat(cmds[0], "/");
 
-				_strcat(cmds[0], path);
-				free(path);
-			}
+		_strcat(cmds[0], path);
+		free(token), free(path);
+	}
 
 }

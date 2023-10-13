@@ -14,8 +14,8 @@ int cd_cmd(int argc, char *argv[], char *envp[])
 
 	char *F_argv = argv[0], *S_argv = argv[1];
 
-	for (argc = 0; argv[argc]; argc++)
-		;
+	/* for (argc = 0; argv[argc]; argc++) */
+	/* 	; */
 	errno = 0, en_v_PWD = get_envalue("PWD", envp, 3); /* errno set to 0*/
 	en_v_OPWD = get_envalue("OLDPWD", envp, 6);
 	if (argc == 2 && strcmp("cd", F_argv) == 0)
@@ -48,6 +48,7 @@ int cd_cmd(int argc, char *argv[], char *envp[])
 	else
 	{errno = EINVAL, perror("Error"), errno = 0;
 		return (-1); }
+	_free_cd(3, en_v_PWD, en_v_OPWD, en_v_HOME);
 	return (0);
 }
 /**
@@ -81,16 +82,17 @@ char *cd_cmd_dd(char *en_v_PWD)
  *
  * Return: NONE.
  */
-void print_envp(char **envp, char *var)
+int print_envp(int span, char **var, char **envp)
 {
 	int i = 0, a = 0, len;
 
+	make_void(1, span);
 	if (envp == NULL || *envp == NULL)
-		return;
+		return (1);
 	if (var == NULL)
 		a = 1;
 	else
-		len = _strlen(var);
+		len = _strlen(*var);
 	while (envp[i])
 		if (a)
 		{
@@ -100,7 +102,7 @@ void print_envp(char **envp, char *var)
 		}
 		else
 		{
-			if (_strncmp(envp[i], var, len) == 0 && envp[i][len] == '=')
+			if (_strncmp(envp[i], *var, len) == 0 && envp[i][len] == '=')
 			{
 				_put_buffer(&envp[i][len + 1]);
 				_put_buffer("\n");
@@ -108,4 +110,5 @@ void print_envp(char **envp, char *var)
 			}
 			i++;
 		}
+	return (0);
 }
