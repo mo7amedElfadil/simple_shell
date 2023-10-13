@@ -1,5 +1,4 @@
 #include "main.h"
-#include <linux/limits.h>
 
 /**
  * cmd_path - find the path for executable commands

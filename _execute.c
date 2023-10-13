@@ -28,6 +28,11 @@ int _execute(int span, char **cmds, char *input,
 			_put_buffer(*cmds);
 			_put_buffer("\n");
 		}
+		else
+		{
+
+			_frees_buff(span, cmds, input);
+		}
 	}
 	if (flag)
 	{
@@ -59,6 +64,7 @@ int _execute(int span, char **cmds, char *input,
 			_frees_buff(span, cmds, input);
 		}
 	}
+
 	return (EXIT_SUCCESS);
 }
 
