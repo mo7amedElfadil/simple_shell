@@ -33,7 +33,7 @@ int cd_cmd(int argc, char *argv[], char *envp[])
 		{
 			if (_setenv("OLDPWD", en_v_PWD, 1, envp) == -1)
 				return (-1); }
-		else if ((_strncmp("/", S_argv, 1) == 0) && is_v_path(S_argv))
+		else if (is_v_path(S_argv))
 		{
 			if (cd_cmd_sup(S_argv, en_v_PWD, envp) == -1)
 				return (-1); }

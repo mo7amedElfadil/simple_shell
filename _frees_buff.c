@@ -1,5 +1,4 @@
 #include "main.h"
-#include <stdarg.h>
 /**
  * _frees_buff - frees all buffers
  * @span: number of tokens - 1 (or index of last token)

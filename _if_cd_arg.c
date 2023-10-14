@@ -1,4 +1,5 @@
 #include "main.h"
+#include <linux/limits.h>
 
 /**
  * cd_cmd__ - execute the cd - inside cd_cmd function.
@@ -39,6 +40,9 @@ int cd_cmd__(char *target, char *previous, char **envp)
 
 int cd_cmd_sup(char *target, char *previous, char **envp)
 {
+
+	printf("target sup %s\n", target);
+	printf("previous sup %s\n", previous);
 	if (chdir(target) == -1)
 	{
 		perror("Error");
@@ -46,7 +50,17 @@ int cd_cmd_sup(char *target, char *previous, char **envp)
 	}
 	else
 	{
-		if (_setenv("PWD", target, 1, envp) == -1)
+		char buff[PATH_MAX];
+		if (target[0] != '/')
+		{
+			_strcpy(buff, previous);
+			_strcat(buff, "/");
+			_strcat(buff, target);
+
+		}
+		else
+			_strcpy(buff, target);
+		if (_setenv("PWD", buff, 1, envp) == -1)
 			return (-1);
 
 		if (_setenv("OLDPWD", previous, 1, envp) == -1)
@@ -67,8 +81,11 @@ int cd_cmd_par(char *target, char **envp)
 {
 	char buffer[PATH_MAX];
 
+	_strcpy(buffer, target);
+	printf("%s\n", target);
 	cd_cmd_dd(target);
-	getcwd(buffer, sizeof(buffer));
+	printf("%s\n", target);
+	printf("buff %s\n", buffer);
 	if (chdir(target) == -1)
 	{
 		perror("Error");

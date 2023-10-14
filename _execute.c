@@ -25,16 +25,17 @@ int _execute(int span, char **cmds, char *input,
 		if ((flag = choose_mode(span, cmds, envp)))
 		{
 			_path_cat(envp, cmds);
-			_put_buffer(*cmds);
-			_put_buffer("\n");
 		}
 		else
 		{
-
 			_frees_buff(span, cmds, input);
 		}
 	}
-	if (flag)
+	/* if (*cmds[0] == '.' && *cmds[1] == '/') */
+	/* { */
+	/* 	*cmds = *cmds + 2; */
+	/* } */
+	if (flag && !access(*cmds, F_OK))
 	{
 		pid = fork();
 		if (pid == -1)
@@ -63,6 +64,12 @@ int _execute(int span, char **cmds, char *input,
 		{
 			_frees_buff(span, cmds, input);
 		}
+	}
+	else
+	{
+		perror("Error");
+		_frees_buff(span, cmds, input);
+
 	}
 
 	return (EXIT_SUCCESS);

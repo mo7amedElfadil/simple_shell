@@ -18,7 +18,6 @@ char *cmd_path(char **envp, char *cmd)
 	while (_strncmp(envp[i], "PATH", 4) && envp[i])
 		i++;
 	len = _strlen(envp[i]);
-	printf("%i\n", len);
 	if (len)
 	{
 		_memcpy(ENV, envp[i], len + 1);

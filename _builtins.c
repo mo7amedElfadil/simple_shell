@@ -67,7 +67,6 @@ void exit_handler(int line, int term_f, char **cmds, char **envp, char *input)
 {
 	char *token = NULL;
 	int ex = 0;
-	printf("Exit Handler....\n");
 	if (line < 0 && term_f)
 		_put_buffer("\n");
 	if (line != -1)

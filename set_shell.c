@@ -95,41 +95,34 @@ int _unsetenv(char *var, char **envp)
 int _setenv(char *var, char *val, int owr, char **en)
 {
 	int i, len = _strlen(var);
-	char *n_var = NULL, **n_en = NULL;
 
 	for (i = 0; en[i]; i++)
 	{
-		if (_strncmp(en[i], var, len) == 0 && en[i][_strlen(var)] == '=')
+		if (_strncmp(en[i], var, len) == 0 && en[i][len] == '=')
 		{
 			if (!owr)
 				return (0);
 			/* errno set to 0*/
-			n_var = malloc(_strlen(var) + _strlen(val) + 2), errno = 0;
-			if (!n_var)
+			en[i] = _realloc(en[i],_strlen(en[i]) + 1, len + _strlen(val) + 2), errno = 0;
+			if (!en[i])
 			{
 				perror("Error");
 				return (-1); }
-			_strcpy(n_var, var), _strcat(n_var, "="), _strcat(n_var, val);
-			en[i] = n_var;
-			/* , free(n_var) */
+			_strcpy(en[i], var), _strcat(en[i], "="), _strcat(en[i], val);
 			return (0); }
 	}
-	n_var = malloc(_strlen(var) + _strlen(val) + 2);
-	if (!n_var)
+		en = _realloc(en, sizeof(char *) * (i + 1), sizeof(char *) * (i + 2));
+	if (!en)
 	{
 		perror("Error");
 		return (-1); }
-	_strcpy(n_var, var), _strcat(n_var, "="), _strcat(n_var, val);
-	n_en = malloc(sizeof(char *) * (i + 2));
-	if (!n_en)
+	en[i] = malloc(_strlen(var) + _strlen(val) + 2);
+	if (!en[i])
 	{
-		perror("Error"), free(n_var);
+		perror("Error");
 		return (-1); }
-	for (i = 0; en[i]; i++)
-		n_en[i] = en[i];
-	n_en[i + 0] = n_var, n_en[i + 1] = NULL;
-	en = n_en;
-	/* free(n_en), free(n_var); */
+	_strcpy(en[i], var), _strcat(en[i], "="), _strcat(en[i], val);
+	en[i + 1] = NULL;
 	return (0);
 }
 
