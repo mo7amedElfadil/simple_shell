@@ -1,5 +1,4 @@
 #include "main.h"
-#include <linux/limits.h>
 
 /**
  * cd_cmd__ - execute the cd - inside cd_cmd function.
@@ -47,7 +46,6 @@ int cd_cmd_sup(char *target, char *previous, char **envp)
 	}
 	else
 	{
-		char buff[PATH_MAX];
 		if (target[0] != '/')
 		{
 			_strcpy(buff, previous);

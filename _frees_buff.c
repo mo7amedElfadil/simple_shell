@@ -29,6 +29,11 @@ void _frees_buff(int span, char **cmds, char *input)
 	}
 }
 
+/**
+ * _free_envp - free the envp,copied in the main.
+ * @envp: the enviromental variable.
+ * Return: void.
+ */
 void _free_envp(char **envp)
 {
 	int i;
@@ -44,13 +49,20 @@ void _free_envp(char **envp)
 	}
 }
 
+/**
+ * _free_cd - free the all the allocation in cd and setenv.
+ * @n:number of arguments .
+ * Return: void.
+ */
 void _free_cd(int n, ...)
 {
 	va_list ap;
+
 	va_start(ap, n);
 	for (; n > 0; n--)
 	{
 		void *ptr = va_arg(ap, void *);
+
 		if (ptr)
 		{
 			free(ptr);
