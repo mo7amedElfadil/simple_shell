@@ -103,7 +103,8 @@ int _setenv(char *var, char *val, int owr, char **en)
 			if (!owr)
 				return (0);
 			/* errno set to 0*/
-			en[i] = _realloc(en[i],_strlen(en[i]) + 1, len + _strlen(val) + 2), errno = 0;
+			en[i] = _realloc(en[i], _strlen(en[i]) + 1, len + _strlen(val) + 2);
+			errno = 0;
 			if (!en[i])
 			{
 				perror("Error");
@@ -111,7 +112,8 @@ int _setenv(char *var, char *val, int owr, char **en)
 			_strcpy(en[i], var), _strcat(en[i], "="), _strcat(en[i], val);
 			return (0); }
 	}
-		en = _realloc(en, sizeof(char *) * (i + 1), sizeof(char *) * (i + 2));
+	printf(" -1 --- %d ---\n", i);
+	en = _realloc(en, sizeof(char *) * (i + 1), sizeof(char *) * (i + 2));
 	if (!en)
 	{
 		perror("Error");
@@ -146,6 +148,7 @@ char *get_envalue(char *var, char **envp, int len)
 	if (envp[i])
 	{
 		char *result = NULL;
+
 		envp_tem = malloc(sizeof(char) * (_strlen(envp[i]) + 1));
 		if (!envp_tem)
 		{

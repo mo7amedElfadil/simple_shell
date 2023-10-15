@@ -46,6 +46,8 @@ char **copy_envp_main(char **envp)
 
 	while (envp[i])
 		i++;
+	printf(" -2 --- %d ---\n", i);
+
 	if (i)
 	{
 		new_envp = malloc(sizeof(char *) * (i + 1));
@@ -60,5 +62,6 @@ char **copy_envp_main(char **envp)
 		new_envp[i] = NULL;
 		return (new_envp);
 	}
+
 	return (envp);
 }

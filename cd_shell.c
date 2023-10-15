@@ -14,8 +14,6 @@ int cd_cmd(int argc, char *argv[], char *envp[])
 
 	char *F_argv = argv[0], *S_argv = argv[1];
 
-	/* for (argc = 0; argv[argc]; argc++) */
-	/* 	; */
 	errno = 0, en_v_PWD = get_envalue("PWD", envp, 3); /* errno set to 0*/
 	en_v_OPWD = get_envalue("OLDPWD", envp, 6);
 	if (argc == 2 && strcmp("cd", F_argv) == 0)
@@ -77,6 +75,7 @@ char *cd_cmd_dd(char *en_v_PWD)
  * print_envp - print the envirement variable's list.
  * @envp: envirement variable's array of strings.
  * @var: if NULL, print the envp list. if not, print the value of this var.
+ * @span: counter
  *
  * for the env built-in cmd, we set var == null.
  *

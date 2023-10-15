@@ -2,6 +2,10 @@
 
 /**
  * print_pid - prints pid of the shell process
+ * @span: number of tokens - 1 (or index of last token)
+ * @cmds: array of tokens/commands
+ * @envp: environmental pointer
+ * Return: 0 on success.
  */
 int print_pid(int span, char **cmds, char **envp)
 {
@@ -15,6 +19,10 @@ int print_pid(int span, char **cmds, char **envp)
 }
 /**
  * print_err - prints errno of the shell process
+ * @span: number of tokens - 1 (or index of last token)
+ * @cmds: array of tokens/commands
+ * @envp: environmental pointer
+ * Return: 0 on success.
  */
 int print_err(int span, char **cmds, char **envp)
 {
@@ -30,17 +38,26 @@ int print_err(int span, char **cmds, char **envp)
 
 /**
  * alias - prints the aliases or creates new one or modifies existing
+ * @span: number of tokens - 1 (or index of last token)
+ * @cmds: array of tokens/commands
+ * @envp: environmental pointer
+ * Return: 0 on success.
  */
 int alias(int span, char **cmds, char **envp)
 {
 	char *result = _itoa(errno);
+
 	make_void(3, span, cmds, envp);
 	_put_buffer(result);
 	free(result);
 	_put_buffer("\n");
 	return (0);
 }
-
+/**
+ * make_void - void unused arguments.
+ * @num: number of arguments to void.
+ * Return: None.
+ */
 void make_void(int num, ...)
 {
 	va_list ap;
@@ -62,11 +79,14 @@ void make_void(int num, ...)
  * @term_f: terminal flag (isatty)
  * @cmds: array of tokens/commands
  * @input: input string from getline()
+ * @envp: environmental pointer
+ * Return: exit 0 on success.
  */
 void exit_handler(int line, int term_f, char **cmds, char **envp, char *input)
 {
 	char *token = NULL;
 	int ex = 0;
+
 	if (line < 0 && term_f)
 		_put_buffer("\n");
 	if (line != -1)
