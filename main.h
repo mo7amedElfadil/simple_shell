@@ -23,6 +23,18 @@
 #ifndef BUFF
 #define BUFF 120
 #endif
+
+
+/**
+ * struct _builtin - builtin function struct
+ * @cmd: string specifier
+ * @func: function pointer
+ */
+typedef struct _builtin
+{
+	char *cmd;
+	int (*func)(int , char **, char **);
+} _built;
 /* your protos goes here */
 int _put_buffer(char *);
 int _put_error(char *);
@@ -48,6 +60,10 @@ char *cmd_path(char **envp, char *cmd);
 void _path_cat(char **envp, char **cmds);
 int _execute(int span, char **cmds, char *input,
 		char **envp, char **av, size_t counter);
+
+_built *builtin_list(void);
+int check_echo(char **cmds);
+
 char *_ultoa(size_t x);
 int _atoi(char *s);
 char *_itoa(int x);
@@ -81,16 +97,6 @@ int print_pid(int span, char **cmds, char **envp);
 
 int print_err(int span, char **cmds, char **envp);
 int alias(int span, char **cmds, char **envp);
-/**
- * struct _builtin - builtin function struct
- * @cmd: string specifier
- * @func: function pointer
- */
-typedef struct _builtin
-{
-	char *cmd;
-	int (*func)(int , char **, char **);
-} _built;
 
 /* int (*)(int,  char **, char **) */
 /**

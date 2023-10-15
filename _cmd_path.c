@@ -34,6 +34,7 @@ char *cmd_path(char **envp, char *cmd)
 								&& (!_strcmp(entity->d_name, cmd))))
 					{
 						char *result = malloc(_strlen(token) + 1);
+
 						_strcpy(result, token);
 						closedir(dir);
 						/* errno = 0; */

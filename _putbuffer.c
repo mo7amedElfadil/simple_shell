@@ -10,7 +10,7 @@ int _put_buffer(char *c)
 }
 
 /**
- * _put_buffer - prints buffer using write
+ * _put_buff - prints buffer using write
  * @c: string pointer
  * Return: number of bytes written
  */

@@ -6,34 +6,29 @@
  * @input: input string from getline()
  * @envp: environmental pointer
  * @av: argument vector
- * @counter: the counter
+ * @count: the counter
  * Return: -1 when execve fails
  *			0 otherwise
  */
 
 int _execute(int span, char **cmds, char *input,
-		char **envp, char **av, size_t counter)
+		char **envp, char **av, size_t count)
 {
 	int status, flag = 0;
 	pid_t pid;
 	char *err_msg = NULL;
 
-
 	if (*cmds[0] != '.' && *cmds[0] != '/')
 	{
-
-		if ((flag = choose_mode(span, cmds, envp)))
-		{
+		flag = choose_mode(span, cmds, envp);
+		if (flag)
 			_path_cat(envp, cmds);
-		}
 		else
-		{
 			_frees_buff(span, NULL, input);
-		}
 	}
 	/* if (*cmds[0] == '.' && *cmds[1] == '/') */
 	/* { */
-	/* 	*cmds = *cmds + 2; */
+	/* *cmds = *cmds + 2; */
 	/* } */
 	if (flag && !access(*cmds, F_OK))
 	{
@@ -41,54 +36,44 @@ int _execute(int span, char **cmds, char *input,
 		if (pid == -1)
 		{
 			_frees_buff(span, cmds, input), perror("Error");
-			return (EXIT_FAILURE);
-		}
+			return (EXIT_FAILURE); }
 		else if (pid == 0)
 		{
 			execve(*cmds, cmds, envp);
-
-			err_msg = _generate_error(cmds, av, counter);
-			perror(err_msg);
-			free(err_msg);
+			err_msg = _generate_error(cmds, av, count), perror(err_msg), free(err_msg);
 			if (envp)
 				_free_envp(envp);
-			_frees_buff(span, cmds, input);
-			exit(EXIT_FAILURE);
-		}
+			_frees_buff(span, cmds, input), exit(EXIT_FAILURE); }
 		if (waitpid(pid, &status, 0) == -1)
 		{
 			perror("Error"), _frees_buff(span, cmds, input);
-			return (EXIT_FAILURE);
-		}
+			return (EXIT_FAILURE); }
 		if (WIFEXITED(status))
-		{
 			_frees_buff(span, cmds, input);
-		}
 	}
 	else
-	{
-		perror("Error");
-		_frees_buff(span, cmds, input);
-
-	}
-
+		perror("Error"), _frees_buff(span, cmds, input);
 	return (EXIT_SUCCESS);
 }
 
-/*
- * chose_mode - chose the execution mode
+
+
+/**
+ * choose_mode - chose the execution mode
+ * @span: number of tokens - 1 (or index of last token)
+ * @cmds: array of tokens/commands
+ * @envp: environmental pointer
+ * Return: 1 when execve fails, 0 in success.
  */
 int choose_mode(int span, char **cmds, char **envp)
 {
-	int i = 0, j = (!_strcmp(*cmds, "echo") &&
-			(cmds[1] ?
-			((!_strcmp(cmds[1], "$$") ^ !_strcmp(cmds[1], "$?")))
-			? 1: 0: 0));
-	_built builtins[] =
-	{{"cd", cd_cmd}, {"$$", print_pid},{"$?", print_err},
-		{"env", print_envp},{"setenv",_setenv_cmd},
+	int i = 0, j = check_echo(cmds);
+	_built builtins[] = {
+		{"cd", cd_cmd}, {"$$", print_pid}, {"$?", print_err},
+		{"env", print_envp}, {"setenv", _setenv_cmd},
 		{"unsetenv", _unsetenv_cmd}, {"alias", alias},
 		{NULL, NULL}};
+
 
 	for (i = 0; builtins[i].cmd; i++)
 	{
@@ -107,21 +92,44 @@ int choose_mode(int span, char **cmds, char **envp)
 					return (0);
 				case 3:
 					print_envp(span + 1, NULL, envp);
-					return 0;
+					return (0);
 				case 4:
 					_setenv_cmd(span + 1, cmds, envp);
-					return 0;
+					return (0);
 				case 5:
 					_unsetenv_cmd(span + 1, cmds, envp);
-					return 0;
+					return (0);
 				case 6:
 					alias(span, cmds, envp);
-					return 0;
+					return (0);
 			}
 		}
 	}
 	return (1);
 }
-
-
-
+/**
+ * builtin_list - contiens the custom built-in cmds to be executed.
+ * Return: return a list of that built-in cmds in _built data type.
+ */
+_built *builtin_list(void)
+{
+	static _built builtins[] = {
+		{"cd", cd_cmd}, {"$$", print_pid}, {"$?", print_err},
+		{"env", print_envp}, {"setenv", _setenv_cmd},
+		{"unsetenv", _unsetenv_cmd}, {"alias", alias},
+		{NULL, NULL}};
+	return (builtins);
+}
+/**
+ * check_echo - check if cmds is echo and is followed with $$ or $?
+ * @cmds: array of tokens/commands
+ * Return: 1 if it is followed woth $$ or $?, and 0 if not echo.
+ */
+int check_echo(char **cmds)
+{
+	int j = (!_strcmp(*cmds, "echo") &&
+			(cmds[1] ?
+			 ((!_strcmp(cmds[1], "$$") ^ !_strcmp(cmds[1], "$?")))
+			 ? 1 : 0 : 0));
+	return (j);
+}
