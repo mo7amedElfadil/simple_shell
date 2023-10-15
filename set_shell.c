@@ -111,7 +111,8 @@ int _setenv(char *var, char *val, int owr, char **en)
 			_strcpy(en[i], var), _strcat(en[i], "="), _strcat(en[i], val);
 			return (0); }
 	}
-		en = _realloc(en, sizeof(char *) * (i + 1), sizeof(char *) * (i + 2));
+	printf(" -1 --- %d ---\n", i);
+	en = _realloc(en, sizeof(char *) * (i + 1), sizeof(char *) * (i + 2));
 	if (!en)
 	{
 		perror("Error");

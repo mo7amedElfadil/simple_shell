@@ -8,29 +8,24 @@
 
 void _frees_buff(int span, char **cmds, char *input)
 {
-	static int cmds_freed = 0;
-	static int input_freed = 0;
+	
 	int idx = 0;
 
-	(void)span;
 	if (cmds)
 	{
-		while (cmds[idx])
+		while (idx <= span && cmds[idx])
 		{
 			free(cmds[idx]);
-			cmds[idx] = NULL;
 			idx++;
 		}
 	}
-	if (cmds && !cmds_freed)
+	if (cmds)
 	{
 		free(cmds);
-		cmds_freed = 1;
 	}
-	if (input && !input_freed)
+	if (input)
 	{
 		free(input);
-		input_freed = 1;
 	}
 }
 
@@ -42,12 +37,10 @@ void _free_envp(char **envp)
 		if (envp[i])
 		{
 			free(envp[i]);
-			envp[i] = NULL;
 		}
 	if (envp)
 	{
 		free(envp);
-		envp = NULL;
 	}
 }
 
@@ -61,7 +54,6 @@ void _free_cd(int n, ...)
 		if (ptr)
 		{
 			free(ptr);
-			ptr = NULL;
 		}
 	}
 	va_end(ap);

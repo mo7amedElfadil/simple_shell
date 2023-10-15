@@ -28,7 +28,8 @@ int _execute(int span, char **cmds, char *input,
 		}
 		else
 		{
-			_frees_buff(span, NULL, input);
+			_frees_buff(span, cmds, input);
+			return (0);
 		}
 	}
 	/* if (*cmds[0] == '.' && *cmds[1] == '/') */
@@ -69,7 +70,6 @@ int _execute(int span, char **cmds, char *input,
 	{
 		perror("Error");
 		_frees_buff(span, cmds, input);
-
 	}
 
 	return (EXIT_SUCCESS);
