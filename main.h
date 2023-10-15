@@ -53,6 +53,7 @@ int _atoi(char *s);
 char *_itoa(int x);
 
 char *_generate_error(char **cmds, char **av, size_t counter);
+char *_custom_err(char *err_msg, char *msg);
 
 void exit_handler(int line, int term_f, char **cmds, char **envp, char *input);
 

@@ -29,6 +29,7 @@ int _execute(int span, char **cmds, char *input,
 		else
 		{
 			_frees_buff(span, cmds, input);
+			return (0);
 		}
 	}
 	/* if (*cmds[0] == '.' && *cmds[1] == '/') */
@@ -46,11 +47,7 @@ int _execute(int span, char **cmds, char *input,
 		else if (pid == 0)
 		{
 			execve(*cmds, cmds, envp);
-
-			err_msg = _generate_error(cmds, av, counter);
-			perror(err_msg);
-			free(err_msg);
-			if (envp)
+					if (envp)
 				_free_envp(envp);
 			_frees_buff(span, cmds, input);
 			exit(EXIT_FAILURE);
@@ -65,9 +62,21 @@ int _execute(int span, char **cmds, char *input,
 			_frees_buff(span, cmds, input);
 		}
 	}
-	else
+	else if(flag)
 	{
-		perror("Error");
+		if (errno == ENOENT)
+		{
+			err_msg = _custom_err(_generate_error(cmds, av, counter),
+					"not found\n");
+			_put_buffer(err_msg);
+		}
+		else
+		{
+			err_msg = _generate_error(cmds, av, counter);
+			perror(err_msg);
+		}
+		free(err_msg);
+
 		_frees_buff(span, cmds, input);
 
 	}

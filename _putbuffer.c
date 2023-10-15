@@ -1,4 +1,5 @@
 #include "main.h"
+#include <stdlib.h>
 /**
  * _put_buffer - prints buffer using write
  * @c: string pointer
@@ -38,5 +39,13 @@ char *_generate_error(char **cmds, char **av, size_t counter)
 	_strcat(err_msg, ": ");
 	_strcat(err_msg, cmds[0]);
 	free(ul);
+	return (err_msg);
+}
+
+char *_custom_err(char *err_msg, char *msg)
+{
+	err_msg = _realloc(err_msg,100, 100 + _strlen(msg) + 1);
+	_strcat(err_msg, ": ");
+	_strcat(err_msg, msg);
 	return (err_msg);
 }
