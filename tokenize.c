@@ -42,6 +42,7 @@ int _tokenize(int term_f, char **envp, char **av, size_t counter)
 			cmds[i] = malloc(_strlen(token) + 1), _strcpy(cmds[i], token);
 		}
 	}
+	
 	cmds[i + 1] = NULL;
 	if (!term_f)
 	{

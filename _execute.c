@@ -28,7 +28,7 @@ int _execute(int span, char **cmds, char *input,
 		}
 		else
 		{
-			_frees_buff(span, cmds, input);
+			_frees_buff(span, NULL, input);
 		}
 	}
 	/* if (*cmds[0] == '.' && *cmds[1] == '/') */
