@@ -112,8 +112,6 @@ int _setenv(char *var, char *val, int owr, char **en)
 			_strcpy(en[i], var), _strcat(en[i], "="), _strcat(en[i], val);
 			return (0); }
 	}
-	printf(" -1 --- %d ---\n", i);
-	/* en = _realloc(en, sizeof(char *) * (i + 1), sizeof(char *) * (i + 2)); */
 	if (!en)
 	{
 		perror("Error");
@@ -162,8 +160,6 @@ char *get_envalue(char *var, char **envp, int len)
 		free(envp_tem);
 		return (result);
 	}
-	/*printf("token in get_envalue function is : %s\n", token);*/
 	return (NULL);
 }
 
-	/*printf("en[i] : %s || n_en[i] : %s\n",en[i] , n_en[i]);*/
