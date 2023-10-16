@@ -50,6 +50,7 @@ char *_strstr(char *haystack, char *needle);
 char *_strncat(char *dest, char *src, int n);
 char *_memcpy(char *dest, char *src, unsigned int n);
 char *_strcpy(char *dest, char *src);
+int _strcspn(char *s1, char *s2);
 
 void _frees_buff(int span, char **cmds, char *input);
 void _free_envp(char **envp);
