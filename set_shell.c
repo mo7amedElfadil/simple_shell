@@ -113,7 +113,7 @@ int _setenv(char *var, char *val, int owr, char **en)
 			return (0); }
 	}
 	printf(" -1 --- %d ---\n", i);
-	en = _realloc(en, sizeof(char *) * (i + 1), sizeof(char *) * (i + 2));
+	/* en = _realloc(en, sizeof(char *) * (i + 1), sizeof(char *) * (i + 2)); */
 	if (!en)
 	{
 		perror("Error");

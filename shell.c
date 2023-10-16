@@ -50,7 +50,7 @@ char **copy_envp_main(char **envp)
 
 	if (i)
 	{
-		new_envp = malloc(sizeof(char *) * (i + 1));
+		new_envp = malloc(sizeof(char *) * (i + 100));
 		if (!new_envp)
 			return (envp);
 		i = 0;
