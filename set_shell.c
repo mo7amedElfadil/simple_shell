@@ -1,4 +1,5 @@
 #include "main.h"
+#include <stdlib.h>
 
 /**
  * _setenv_cmd - Initialize a new environment variable, modify an existing one.
@@ -24,6 +25,8 @@ int _setenv_cmd(int argc, char **argv, char **envp)
 		if (_setenv(argv[1], "\0", 1, envp) == -1)
 			return (-1);
 	}
+	else if (argc == 1)
+		print_envp(0, NULL, envp);
 	else
 	{
 		/* errno = EINVAL, perror("Error"), errno = 0; */

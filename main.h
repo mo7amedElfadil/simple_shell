@@ -33,8 +33,9 @@
 typedef struct _builtin
 {
 	char *cmd;
-	int (*func)(int , char **, char **);
+	int (*func)(int, char **, char **);
 } _built;
+
 /* your protos goes here */
 int _put_buffer(char *);
 int _put_error(char *);
@@ -64,8 +65,9 @@ char *prepend_pwd(char *cmds, char **envp);
 
 int _execute(int span, char **cmds, char *input,
 		char **envp, char **av, size_t counter, int term_f);
+int exec_fork(pid_t pid, int *status, char *err_msg, int span, char **cmds,
+		char **envp, char *input, char **av, size_t count);
 
-_built *builtin_list(void);
 int check_echo(char **cmds);
 char *_strtok(char *str, const char *delim);
 char *_strpbrk(char *s, char *accept);
@@ -81,7 +83,8 @@ char *_generate_error(char **cmds, char **av, size_t counter);
 char *_custom_err(char *err_msg, char *msg);
 
 
-void exit_handler(int line, int term_f, int span, char **cmds, char **envp, char *input, char **av, size_t counter);
+void exit_handler(int line, int term_f, int span,
+		char **cmds, char **envp, char *input, char **av, size_t counter);
 
 
 int cd_cmd(int argc, char *argv[], char *envp[]);

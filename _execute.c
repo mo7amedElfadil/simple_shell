@@ -20,29 +20,14 @@ int _execute(int span, char **cmds, char *input,
 	pid_t pid;
 	char *err_msg = NULL;
 
-
 	flag = choose_mode(span, cmds, envp);
-	if (flag && access(*cmds, F_OK))
-		cat = !_path_cat(envp, cmds);
+
+	if (flag)
+		cat = !(_path_cat(envp, cmds));
 	if (flag && cat && !access(*cmds, F_OK))
 	{
 		pid = fork();
-		if (pid == -1)
-		{
-			_frees_buff(span, cmds, input), perror("Error");
-			return (EXIT_FAILURE); }
-		else if (pid == 0)
-		{
-			execve(*cmds, cmds, envp);
-			err_msg = _generate_error(cmds, av, count), errno = 127,
-					perror(err_msg), free(err_msg);
-			exit_handler(1, 0, span, cmds, envp, input, av, count); }
-		if (waitpid(pid, &status, 0) == -1)
-		{
-			perror("Error"), _frees_buff(span, cmds, input);
-			return (EXIT_FAILURE); }
-		if (WIFEXITED(status))
-			_frees_buff(span, cmds, input);
+		exec_fork(pid, &status, err_msg, span, cmds, envp, input, av, count);
 	}
 	else
 	{
@@ -54,7 +39,6 @@ int _execute(int span, char **cmds, char *input,
 			else if (errno)
 				err_msg = _generate_error(cmds, av, count), errno = 127,
 						_put_error(err_msg), free(err_msg);
-
 			errno = 127;
 			if (!term_f)
 				exit_handler(1, 0, span, cmds, envp, input, av, count);
@@ -66,7 +50,55 @@ int _execute(int span, char **cmds, char *input,
 }
 
 
+/**
+ * exec_fork - Handles the forked process.
+ * @pid: process id.
+ * @status: exit status of child process.
+ * @err_msg: error message
+ * @span: indix of last elements in cmds.
+ * @cmds: array of tokens/commands.
+ * @envp: environmental pointer
+ * @input: input string from getline().
+ * @av: argv.
+ * @count: count how many cmd has been executed.
+ * Return: exit 0 on success.
+ */
+int exec_fork(pid_t pid, int *status, char *err_msg, int span, char **cmds,
+		char **envp, char *input, char **av, size_t count)
+{
 
+		if (pid == -1)
+		{
+			_frees_buff(span, cmds, input), perror("Error");
+			return (EXIT_FAILURE); }
+		else if (pid == 0)
+		{
+			execve(*cmds, cmds, envp);
+			err_msg = _generate_error(cmds, av, count), errno = 127,
+					perror(err_msg), free(err_msg);
+			exit_handler(1, 0, span, cmds, envp, input, av, count); }
+		if (waitpid(pid, status, 0) == -1)
+		{
+			perror("Error"), _frees_buff(span, cmds, input);
+			return (EXIT_FAILURE); }
+		if (WIFEXITED(*status))
+			_frees_buff(span, cmds, input);
+		return (0);
+}
+
+/**
+ * check_echo - check if cmds is echo and is followed with $$ or $?
+ * @cmds: array of tokens/commands
+ * Return: 1 if it is followed woth $$ or $?, and 0 if not echo.
+ */
+int check_echo(char **cmds)
+{
+	int j = (!_strcmp(*cmds, "echo") &&
+			(cmds[1] ?
+			 ((!_strcmp(cmds[1], "$$") ^ !_strcmp(cmds[1], "$?")))
+			 ? 1 : 0 : 0));
+	return (j);
+}
 /**
  * choose_mode - chose the execution mode
  * @span: number of tokens - 1 (or index of last token)
@@ -80,9 +112,7 @@ int choose_mode(int span, char **cmds, char **envp)
 	_built builtins[] = {
 		{"cd", cd_cmd}, {"$$", print_pid}, {"$?", print_err},
 		{"env", print_envp}, {"setenv", _setenv_cmd},
-		{"unsetenv", _unsetenv_cmd}, {"alias", alias},
-		{NULL, NULL}};
-
+		{"unsetenv", _unsetenv_cmd}, {"alias", alias}, {NULL, NULL}};
 
 	for (i = 0; builtins[i].cmd; i++)
 	{
@@ -116,29 +146,5 @@ int choose_mode(int span, char **cmds, char **envp)
 	}
 	return (1);
 }
-/**
- * builtin_list - contiens the custom built-in cmds to be executed.
- * Return: return a list of that built-in cmds in _built data type.
- */
-_built *builtin_list(void)
-{
-	static _built builtins[] = {
-		{"cd", cd_cmd}, {"$$", print_pid}, {"$?", print_err},
-		{"env", print_envp}, {"setenv", _setenv_cmd},
-		{"unsetenv", _unsetenv_cmd}, {"alias", alias},
-		{NULL, NULL}};
-	return (builtins);
-}
-/**
- * check_echo - check if cmds is echo and is followed with $$ or $?
- * @cmds: array of tokens/commands
- * Return: 1 if it is followed woth $$ or $?, and 0 if not echo.
- */
-int check_echo(char **cmds)
-{
-	int j = (!_strcmp(*cmds, "echo") &&
-			(cmds[1] ?
-			 ((!_strcmp(cmds[1], "$$") ^ !_strcmp(cmds[1], "$?")))
-			 ? 1 : 0 : 0));
-	return (j);
-}
+
+
