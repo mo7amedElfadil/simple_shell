@@ -67,6 +67,11 @@ int _execute(int span, char **cmds, char *input,
 
 _built *builtin_list(void);
 int check_echo(char **cmds);
+char *_strtok(char *str, const char *delim);
+char *_strpbrk(char *s, char *accept);
+unsigned int _strspn(char *s, char *accept);
+
+
 
 char *_ultoa(size_t x);
 int _atoi(char *s);
