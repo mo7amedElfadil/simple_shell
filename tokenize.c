@@ -17,10 +17,10 @@ int _tokenize(int term_f, char **envp, char **av, size_t counter)
 	char **cmds = malloc(sizeof(*cmds) * BUFF);
 
 	line = getline(&input, &len, stdin);
-	if (line < 0 || !strncmp(input, "exit", 4))
-		exit_handler(line, term_f, -1, cmds, envp, input);
-	delimited = strcspn(input, " "); /* replace function with custom */
-	token =  strtok(input, " \t\r\n\v\f");
+	if (line < 0 || !_strncmp(input, "exit", 4))
+		exit_handler(line, term_f, -1, cmds, envp, input, av, counter);
+	delimited = _strcspn(input, " "); /* replace function with custom */
+	token =  _strtok(input, " \t\r\n\v\f");
 	if (!token)
 	{
 		_frees_buff(-1, cmds, input);
@@ -33,7 +33,7 @@ int _tokenize(int term_f, char **envp, char **av, size_t counter)
 		while (cmds[i])
 		{
 			i++;
-			token = strtok(NULL, " \t\r\n\v\f");
+			token = _strtok(NULL, " \t\r\n\v\f");
 			if (!token)
 			{
 				i--;
@@ -47,7 +47,7 @@ int _tokenize(int term_f, char **envp, char **av, size_t counter)
 	{
 		_execute(i, cmds, input, envp, av, counter, term_f);
 		_tokenize(term_f, envp, av, counter);
-		exit_handler(1, 0, 0, NULL, NULL, NULL);
+		exit_handler(1, 0, 0, NULL, NULL, NULL, av, counter);
 	}
 		return (_execute(i, cmds, input, envp, av, counter, term_f));
 }

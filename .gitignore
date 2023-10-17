@@ -2,8 +2,6 @@
 !/*.c
 !/.gitignore
 !/main.h
-!/README.md
+!/*.md
 *main.c
-a.out
-simple_shell_project
-allowed_functions
+

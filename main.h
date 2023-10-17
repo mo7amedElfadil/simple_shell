@@ -81,7 +81,7 @@ char *_generate_error(char **cmds, char **av, size_t counter);
 char *_custom_err(char *err_msg, char *msg);
 
 
-void exit_handler(int line, int term_f, int span, char **cmds, char **envp, char *input);
+void exit_handler(int line, int term_f, int span, char **cmds, char **envp, char *input, char **av, size_t counter);
 
 
 int cd_cmd(int argc, char *argv[], char *envp[]);
@@ -100,7 +100,6 @@ int print_envp(int span, char **var, char **envp);
 int _unsetenv_cmd(int argc, char **argv, char **envp);
 char **copy_envp_main(char **envp);
 int _put_buff(char c);
-
 
 void make_void(int num, ...);
 int choose_mode(int span, char **cmds, char **envp);

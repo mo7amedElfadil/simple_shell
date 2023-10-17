@@ -35,7 +35,7 @@ int _execute(int span, char **cmds, char *input,
 			execve(*cmds, cmds, envp);
 			err_msg = _generate_error(cmds, av, count), errno = 127,
 					perror(err_msg), free(err_msg);
-			exit_handler(1, 0, span, cmds, envp, input); }
+			exit_handler(1, 0, span, cmds, envp, input, av, count); }
 		if (waitpid(pid, &status, 0) == -1)
 		{
 			perror("Error"), _frees_buff(span, cmds, input);
@@ -56,7 +56,7 @@ int _execute(int span, char **cmds, char *input,
 
 			errno = 127;
 			if (!term_f)
-				exit_handler(1, 0, span, cmds, envp, input);
+				exit_handler(1, 0, span, cmds, envp, input, av, count);
 		}
 		_frees_buff(span, cmds, input);
 	}

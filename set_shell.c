@@ -76,6 +76,7 @@ int _unsetenv(char *var, char **envp)
 	{
 		if (_strncmp(envp[i], var, len) == 0 && envp[i][_strlen(var)] == '=')
 		{
+			free(envp[i]);
 			for (j = i; envp[j]; j++)
 				envp[j] = envp[j + 1];
 			return (0);

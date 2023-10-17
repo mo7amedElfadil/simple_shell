@@ -81,7 +81,8 @@ void make_void(int num, ...)
  * @envp: environmental pointer
  * Return: exit 0 on success.
  */
-void exit_handler(int line, int term_f, int span, char **cmds, char **envp, char *input)
+void exit_handler(int line, int term_f, int span, char **cmds,
+		char **envp, char *input, char **av, size_t counter)
 {
 	char *token = NULL;
 	int ex = errno;
@@ -94,7 +95,16 @@ void exit_handler(int line, int term_f, int span, char **cmds, char **envp, char
 		token = strtok(NULL, " \t\r\n\v\f");
 	}
 	if (token)
+	{
 		ex = _atoi(token);
+		if (ex < 0)
+		{
+			char *ptr;
+
+			ptr = _custom_err(_generate_error(cmds, av, counter), "Illegal number\n");
+			_put_error(ptr), free(ptr), ex = 2;
+		}
+	}
 	if (envp)
 		_free_envp(envp);
 	if (cmds)

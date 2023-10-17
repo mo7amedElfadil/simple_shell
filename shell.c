@@ -14,7 +14,7 @@ int main(int ac, char **av, char *envp_origin[])
 
 	envp = copy_envp_main(envp_origin);
 	if (!envp)
-		exit_handler(0, 1, 0, 0, 0, 0);
+		exit_handler(0, 1, 0, 0, 0, 0, av, 0);
 	(void)ac, (void)av;
 	while (1)
 	{
