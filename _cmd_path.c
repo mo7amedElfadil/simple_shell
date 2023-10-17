@@ -15,8 +15,12 @@ char *cmd_path(char **envp, char *cmd)
 	DIR *dir;
 	struct dirent *entity;
 
-	while (_strncmp(envp[i], "PATH", 4) && envp[i])
+	if (!envp)
+		return (0);
+	while (envp[i] && _strncmp(envp[i], "PATH", 4))
 		i++;
+	if (!envp[i])
+		return (NULL);
 	len = _strlen(envp[i]);
 	if (len)
 	{
@@ -37,7 +41,7 @@ char *cmd_path(char **envp, char *cmd)
 
 						_strcpy(result, token);
 						closedir(dir);
-						/* , errno = 0; */
+						errno = 0;
 						return (result);
 					}
 				}

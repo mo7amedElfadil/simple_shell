@@ -13,7 +13,7 @@
 
 
 int _execute(int span, char **cmds, char *input,
-		char **envp, char **av, size_t count)
+		char **envp, char **av, size_t count, int term_f)
 {
 	int status, flag = 0, cat = 1;
 	pid_t pid;
@@ -33,9 +33,9 @@ int _execute(int span, char **cmds, char *input,
 		else if (pid == 0)
 		{
 			execve(*cmds, cmds, envp);
-			err_msg = _generate_error(cmds, av, count), perror(err_msg), free(err_msg);
-			_frees_buff(span, cmds, input);
-			exit_handler(1, 0, NULL, envp, NULL); }
+			err_msg = _generate_error(cmds, av, count), errno = 127,
+					perror(err_msg), free(err_msg);
+			exit_handler(1, 0, span, cmds, envp, input); }
 		if (waitpid(pid, &status, 0) == -1)
 		{
 			perror("Error"), _frees_buff(span, cmds, input);
@@ -49,12 +49,14 @@ int _execute(int span, char **cmds, char *input,
 		{
 			if (errno == ENOENT)
 				err_msg = _custom_err(_generate_error(cmds, av, count),
-						"not found\n"), _put_error(err_msg), free(err_msg);
+						"not found\n"), errno = 127, _put_error(err_msg), free(err_msg);
 			else if (errno)
-				err_msg = _generate_error(cmds, av, count),
+				err_msg = _generate_error(cmds, av, count), errno = 127,
 						_put_error(err_msg), free(err_msg);
-			_frees_buff(span, cmds, input);
-			exit(127);
+
+			errno = 127;
+			if (!term_f)
+				exit_handler(1, 0, span, cmds, envp, input);
 		}
 		_frees_buff(span, cmds, input);
 	}

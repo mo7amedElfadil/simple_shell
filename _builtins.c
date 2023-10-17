@@ -81,26 +81,24 @@ void make_void(int num, ...)
  * @envp: environmental pointer
  * Return: exit 0 on success.
  */
-void exit_handler(int line, int term_f, char **cmds, char **envp, char *input)
+void exit_handler(int line, int term_f, int span, char **cmds, char **envp, char *input)
 {
 	char *token = NULL;
 	int ex = errno;
 
 	if (line < 0 && term_f)
 		_put_buffer("\n");
-	if (line != -1)
+	if (line != -1 && input)
 	{
 		token = strtok(input, " \t\r\n\v\f");
 		token = strtok(NULL, " \t\r\n\v\f");
 	}
 	if (token)
 		ex = _atoi(token);
-	if (input)
-		free(input);
 	if (envp)
 		_free_envp(envp);
 	if (cmds)
-		free(cmds);
+		_frees_buff(span, cmds, input);
 	exit(ex);
 }
 

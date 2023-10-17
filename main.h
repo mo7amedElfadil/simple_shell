@@ -63,7 +63,7 @@ char *cut_prefix(char *cmds, int size);
 char *prepend_pwd(char *cmds, char **envp);
 
 int _execute(int span, char **cmds, char *input,
-		char **envp, char **av, size_t counter);
+		char **envp, char **av, size_t counter, int term_f);
 
 _built *builtin_list(void);
 int check_echo(char **cmds);
@@ -75,7 +75,9 @@ char *_itoa(int x);
 char *_generate_error(char **cmds, char **av, size_t counter);
 char *_custom_err(char *err_msg, char *msg);
 
-void exit_handler(int line, int term_f, char **cmds, char **envp, char *input);
+
+void exit_handler(int line, int term_f, int span, char **cmds, char **envp, char *input);
+
 
 int cd_cmd(int argc, char *argv[], char *envp[]);
 char *cd_cmd_dd(char *en_v_PWD);

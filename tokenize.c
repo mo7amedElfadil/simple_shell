@@ -18,7 +18,7 @@ int _tokenize(int term_f, char **envp, char **av, size_t counter)
 
 	line = getline(&input, &len, stdin);
 	if (line < 0 || !strncmp(input, "exit", 4))
-		exit_handler(line, term_f, cmds, envp, input);
+		exit_handler(line, term_f, -1, cmds, envp, input);
 	delimited = strcspn(input, " "); /* replace function with custom */
 	token =  strtok(input, " \t\r\n\v\f");
 	if (!token)
@@ -45,9 +45,10 @@ int _tokenize(int term_f, char **envp, char **av, size_t counter)
 	cmds[i + 1] = NULL;
 	if (!term_f)
 	{
-		_execute(i, cmds, input, envp, av, counter);
-		return (_tokenize(term_f, envp, av, counter));
+		_execute(i, cmds, input, envp, av, counter, term_f);
+		_tokenize(term_f, envp, av, counter);
+		exit_handler(1, 0, 0, NULL, NULL, NULL);
 	}
-		return (_execute(i, cmds, input, envp, av, counter));
+		return (_execute(i, cmds, input, envp, av, counter, term_f));
 }
 

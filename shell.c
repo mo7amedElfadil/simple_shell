@@ -13,7 +13,8 @@ int main(int ac, char **av, char *envp_origin[])
 	char **envp = NULL;
 
 	envp = copy_envp_main(envp_origin);
-
+	if (!envp)
+		exit_handler(0, 1, 0, 0, 0, 0);
 	(void)ac, (void)av;
 	while (1)
 	{
@@ -43,7 +44,8 @@ char **copy_envp_main(char **envp)
 {
 	char **new_envp = NULL;
 	int i = 0;
-
+	if (!envp)
+		return(NULL);
 	while (envp[i])
 		i++;
 	if (i)
