@@ -39,8 +39,7 @@ char *cmd_path(char **envp, char *cmd)
 					{
 						char *result = malloc(_strlen(token) + 1);
 
-						_strcpy(result, token);
-						closedir(dir);
+						_strcpy(result, token), closedir(dir);
 						errno = 0;
 						return (result);
 					}
@@ -56,6 +55,7 @@ char *cmd_path(char **envp, char *cmd)
  * _path_cat - concatinate path with command
  * @envp: environmental pointer
  * @cmds: commands pointer
+ * Return: 0 if success, 1 on failure.
  */
 int _path_cat(char **envp, char **cmds)
 {
@@ -90,11 +90,17 @@ int _path_cat(char **envp, char **cmds)
 	return (1);
 
 }
-
+/**
+ * cut_prefix - cut the prefix.
+ * @cmds: the commands to cut.
+ * @size: size of prefix.
+ * Return: the cutted cmds.
+ */
 char *cut_prefix(char *cmds, int size)
 {
 	char tok[100];
 	int len = _strlen(cmds), i = 0;
+
 	while (cmds[i + size] && (i + size) < len)
 		tok[i] = cmds[i + size], i++;
 	tok[i] = 0;
@@ -103,11 +109,17 @@ char *cut_prefix(char *cmds, int size)
 	return (cmds);
 }
 
-
+/**
+ * prepend_pwd - prepand the pwd to cmds.
+ * @cmds: the commands to cut.
+ * @envp: enviremental variables.
+ * Return: full path of the cmd.
+ */
 char *prepend_pwd(char *cmds, char **envp)
 {
 	char tok[100], *pwd;
 	int len = _strlen(cmds);
+
 	pwd = get_envalue("PWD", envp, 3);
 	_strcpy(tok, pwd);
 	_strcat(tok, "/");

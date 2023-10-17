@@ -7,6 +7,7 @@
  * @envp: environmental pointer
  * @av: argument vector
  * @count: the counter
+ * @term_f: from issaty, 1 for interactive mode, 0 if not.
  * Return: -1 when execve fails
  *			0 otherwise
  */

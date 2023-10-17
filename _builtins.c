@@ -75,10 +75,13 @@ void make_void(int num, ...)
  * exit_handler - Handles exit status
  * @line: return value of getline. Determines its exit status
  *		and used to know if ctrl + d or EOF was entered
- * @term_f: terminal flag (isatty)
- * @cmds: array of tokens/commands
- * @input: input string from getline()
+ * @term_f: terminal flag (isatty).
+ * @span: indix of last elements in cmds.
+ * @cmds: array of tokens/commands.
  * @envp: environmental pointer
+ * @input: input string from getline().
+ * @av: argv.
+ * @counter: count how many cmd has been executed.
  * Return: exit 0 on success.
  */
 void exit_handler(int line, int term_f, int span, char **cmds,

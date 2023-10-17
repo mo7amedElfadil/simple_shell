@@ -44,8 +44,9 @@ char **copy_envp_main(char **envp)
 {
 	char **new_envp = NULL;
 	int i = 0;
+
 	if (!envp)
-		return(NULL);
+		return (NULL);
 	while (envp[i])
 		i++;
 	if (i)
