@@ -50,6 +50,7 @@ char *_strstr(char *haystack, char *needle);
 char *_strncat(char *dest, char *src, int n);
 char *_memcpy(char *dest, char *src, unsigned int n);
 char *_strcpy(char *dest, char *src);
+int _strcspn(char *s1, char *s2);
 
 void _frees_buff(int span, char **cmds, char *input);
 void _free_envp(char **envp);
@@ -57,7 +58,10 @@ void _free_cd(int n, ...);
 
 int _tokenize(int term_f, char **envp, char **av, size_t counter);
 char *cmd_path(char **envp, char *cmd);
-void _path_cat(char **envp, char **cmds);
+int _path_cat(char **envp, char **cmds);
+char *cut_prefix(char *cmds, int size);
+char *prepend_pwd(char *cmds, char **envp);
+
 int _execute(int span, char **cmds, char *input,
 		char **envp, char **av, size_t counter);
 

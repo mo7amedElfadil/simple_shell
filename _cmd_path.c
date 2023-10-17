@@ -37,7 +37,7 @@ char *cmd_path(char **envp, char *cmd)
 
 						_strcpy(result, token);
 						closedir(dir);
-						/* errno = 0; */
+						/* , errno = 0; */
 						return (result);
 					}
 				}
@@ -45,7 +45,6 @@ char *cmd_path(char **envp, char *cmd)
 			}
 		}
 	}
-	/* errno = 0; */
 	return (NULL);
 }
 
@@ -54,7 +53,7 @@ char *cmd_path(char **envp, char *cmd)
  * @envp: environmental pointer
  * @cmds: commands pointer
  */
-void _path_cat(char **envp, char **cmds)
+int _path_cat(char **envp, char **cmds)
 {
 	char *token = NULL;
 
@@ -74,6 +73,43 @@ void _path_cat(char **envp, char **cmds)
 
 		_strcat(cmds[0], path);
 		free(token), free(path);
-	}
+		return (0);
 
+	}
+	else if (!strncmp(*cmds, "./", 2))
+	{
+		*cmds = cut_prefix(*cmds, 2);
+		*cmds = prepend_pwd(*cmds, envp);
+		return (0);
+	}
+	/* errno = ENOENT; */
+	return (1);
+
+}
+
+char *cut_prefix(char *cmds, int size)
+{
+	char tok[100];
+	int len = _strlen(cmds), i = 0;
+	while (cmds[i + size] && (i + size) < len)
+		tok[i] = cmds[i + size], i++;
+	tok[i] = 0;
+	cmds = _realloc(cmds, len + 1, _strlen(tok) + 1);
+	_strcpy(cmds, tok);
+	return (cmds);
+}
+
+
+char *prepend_pwd(char *cmds, char **envp)
+{
+	char tok[100], *pwd;
+	int len = _strlen(cmds);
+	pwd = get_envalue("PWD", envp, 3);
+	_strcpy(tok, pwd);
+	_strcat(tok, "/");
+	_strcat(tok, cmds);
+	cmds = _realloc(cmds, len + 1, _strlen(tok) + 1);
+	_strcpy(cmds, tok);
+	free(pwd);
+	return (cmds);
 }

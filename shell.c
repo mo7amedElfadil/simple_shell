@@ -20,8 +20,8 @@ int main(int ac, char **av, char *envp_origin[])
 		int term_f = 0, err = 0;
 
 		counter++;
-
 		term_f = isatty(STDIN_FILENO);
+		errno = 0;
 		if (term_f)
 			_put_buffer("($) ");
 		err = _tokenize(term_f, envp, av, counter);

@@ -8,7 +8,6 @@
 
 void _frees_buff(int span, char **cmds, char *input)
 {
-	
 	int idx = 0;
 
 	if (cmds)

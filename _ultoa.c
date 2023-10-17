@@ -9,7 +9,7 @@ char *_ultoa(size_t x)
 	size_t i = 0, buf = BUFF;
 	char *y = NULL;
 
-	y = _realloc(y, 0, buf);
+	y = malloc(buf);
 	if (x == 0)
 	{
 		y[0] = '0', y[1] = '\0';
@@ -19,7 +19,10 @@ char *_ultoa(size_t x)
 	{
 		y = ((i >= buf) ? _realloc(y, buf, buf + BUFF) : y);
 		if (!y)
-			free(y), perror("Error"), exit(98);
+		{
+			free(y);
+			return (NULL);
+		}
 		buf = (i >= buf) ? buf + BUFF : buf;
 		y[i] = x % 10 + 48;
 		x /= 10;

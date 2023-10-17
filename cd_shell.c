@@ -20,6 +20,10 @@ int cd_cmd(int argc, char *argv[], char *envp[])
 	{
 		if (_strcmp("-", S_argv) == 0)
 		{
+			if (!en_v_OPWD)
+			{
+				en_v_OPWD = get_envalue("PWD", envp, 3);
+			}
 			if (cd_cmd__(en_v_OPWD, en_v_PWD, envp) == -1)
 				return (-1); }
 		else if (_strcmp("..", S_argv) == 0)
@@ -111,3 +115,9 @@ int print_envp(int span, char **var, char **envp)
 		}
 	return (0);
 }
+/*
+				err_msg = _custom_err(_generate_error(cmds, av, count),
+						"OLDPWD not set\n");
+				_put_buffer(err_msg);
+			}
+*/

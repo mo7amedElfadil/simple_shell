@@ -11,29 +11,19 @@
  *			0 otherwise
  */
 
+
 int _execute(int span, char **cmds, char *input,
 		char **envp, char **av, size_t count)
 {
-	int status, flag = 0;
+	int status, flag = 0, cat = 1;
 	pid_t pid;
 	char *err_msg = NULL;
 
-	if (*cmds[0] != '.' && *cmds[0] != '/')
-	{
-		flag = choose_mode(span, cmds, envp);
-		if (flag)
-			_path_cat(envp, cmds);
-		else
-		{
-			_frees_buff(span, cmds, input);
-			return (0);
-		}
-	}
-	/* if (*cmds[0] == '.' && *cmds[1] == '/') */
-	/* { */
-	/* *cmds = *cmds + 2; */
-	/* } */
-	if (flag && !access(*cmds, F_OK))
+
+	flag = choose_mode(span, cmds, envp);
+	if (flag && access(*cmds, F_OK))
+		cat = !_path_cat(envp, cmds);
+	if (flag && cat && !access(*cmds, F_OK))
 	{
 		pid = fork();
 		if (pid == -1)
@@ -44,9 +34,8 @@ int _execute(int span, char **cmds, char *input,
 		{
 			execve(*cmds, cmds, envp);
 			err_msg = _generate_error(cmds, av, count), perror(err_msg), free(err_msg);
-			if (envp)
-				_free_envp(envp);
-			_frees_buff(span, cmds, input), exit(EXIT_FAILURE); }
+			_frees_buff(span, cmds, input);
+			exit_handler(1, 0, NULL, envp, NULL); }
 		if (waitpid(pid, &status, 0) == -1)
 		{
 			perror("Error"), _frees_buff(span, cmds, input);
@@ -56,18 +45,17 @@ int _execute(int span, char **cmds, char *input,
 	}
 	else
 	{
-		if (errno == ENOENT)
+		if (errno)
 		{
-			err_msg = _custom_err(_generate_error(cmds, av, count),
-					"not found\n");
-			_put_buffer(err_msg);
+			if (errno == ENOENT)
+				err_msg = _custom_err(_generate_error(cmds, av, count),
+						"not found\n"), _put_error(err_msg), free(err_msg);
+			else if (errno)
+				err_msg = _generate_error(cmds, av, count),
+						_put_error(err_msg), free(err_msg);
+			_frees_buff(span, cmds, input);
+			exit(127);
 		}
-		else
-		{
-			err_msg = _generate_error(cmds, av, count);
-			perror(err_msg);
-		}
-		free(err_msg);
 		_frees_buff(span, cmds, input);
 	}
 

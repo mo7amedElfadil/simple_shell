@@ -32,7 +32,6 @@ int print_err(int span, char **cmds, char **envp)
 	_put_buffer(result);
 	free(result);
 	_put_buffer("\n");
-	errno = 0;
 	return (0);
 }
 
@@ -85,7 +84,7 @@ void make_void(int num, ...)
 void exit_handler(int line, int term_f, char **cmds, char **envp, char *input)
 {
 	char *token = NULL;
-	int ex = 0;
+	int ex = errno;
 
 	if (line < 0 && term_f)
 		_put_buffer("\n");
@@ -96,7 +95,12 @@ void exit_handler(int line, int term_f, char **cmds, char **envp, char *input)
 	}
 	if (token)
 		ex = _atoi(token);
-	free(input), free(cmds), _free_envp(envp);
+	if (input)
+		free(input);
+	if (envp)
+		_free_envp(envp);
+	if (cmds)
+		free(cmds);
 	exit(ex);
 }
 
