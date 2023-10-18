@@ -1,5 +1,4 @@
 #include "main.h"
-#include <stdlib.h>
 
 /**
  * _setenv_cmd - Initialize a new environment variable, modify an existing one.
@@ -25,11 +24,8 @@ int _setenv_cmd(int argc, char **argv, char **envp)
 		if (_setenv(argv[1], "\0", 1, envp) == -1)
 			return (-1);
 	}
-	else if (argc == 1)
-		print_envp(0, NULL, envp);
 	else
 	{
-		/* errno = EINVAL, perror("Error"), errno = 0; */
 		return (-1);
 	}
 	return (0);
@@ -52,13 +48,11 @@ int _unsetenv_cmd(int argc, char **argv, char **envp)
 	{
 		if (_unsetenv(argv[1], envp) == -1)
 		{
-			/* printf("cannot unset the variable\n"); */
 			return (-1);
 		}
 	}
 	else
 	{
-		/* errno = EINVAL, perror("Error"), errno = 0; */
 		return (-1);
 	}
 	return (0);
@@ -106,24 +100,19 @@ int _setenv(char *var, char *val, int owr, char **en)
 		{
 			if (!owr)
 				return (0);
-			/* errno set to 0*/
 			en[i] = _realloc(en[i], _strlen(en[i]) + 1, len + _strlen(val) + 2);
-			/* errno = 0; */
 			if (!en[i])
 			{
-				/* perror("Error"); */
 				return (-1); }
 			_strcpy(en[i], var), _strcat(en[i], "="), _strcat(en[i], val);
 			return (0); }
 	}
 	if (!en)
 	{
-		/* perror("Error"); */
 		return (-1); }
 	en[i] = malloc(_strlen(var) + _strlen(val) + 2);
 	if (!en[i])
 	{
-		/* perror("Error"); */
 		return (-1); }
 	_strcpy(en[i], var), _strcat(en[i], "="), _strcat(en[i], val);
 	en[i + 1] = NULL;
