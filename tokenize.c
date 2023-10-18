@@ -50,7 +50,7 @@ char **_tokenize_n_al(int line, char *input, char **envp)
 	char *token, *var, **cmds = malloc(8 * BUFF);
 
 	del1 = _strcspn(input, " ");
-	del2 = _strcspn(input, "\n");
+	del2 = _strcspn(input, "\t");
 	delimited = (del1 > del2) ? del2 : del1;
 	token =  _strtok(input, " \t\r\n\v\f");
 	if (!token)
