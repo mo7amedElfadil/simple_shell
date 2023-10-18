@@ -121,7 +121,8 @@ int _isalpha(int c)
 int cmds_n_elm(char **cmds)
 {
 	int i = 0;
-
+	if(!cmds)
+	return (0);
 	while (*cmds)
 		cmds++, i++;
 	return (i - 1);

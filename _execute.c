@@ -19,7 +19,8 @@ int _execute(int span, char **cmds, char *input,
 	int status, flag = 0, cat = 1;
 	pid_t pid;
 	char *err_msg = NULL;
-
+	if(!cmds)
+		return (EXIT_FAILURE);
 	flag = choose_mode(span, cmds, envp);
 
 	if (flag && access(*cmds, F_OK))
