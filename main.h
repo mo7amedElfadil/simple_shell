@@ -100,6 +100,7 @@ char *_ultoa(size_t x);
 int _atoi(char *s);
 char *_itoa(int x);
 int _isalpha(int c);
+int _isnumeric(char *c);
 
 char *_generate_error(char **cmds, char **av, size_t counter);
 char *_custom_err(char *err_msg, char *msg);

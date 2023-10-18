@@ -1,4 +1,5 @@
 #include "main.h"
+#include <ctype.h>
 
 /**
  * print_pid - prints pid of the shell process
@@ -83,11 +84,12 @@ void exit_handler(int line, int term_f, int span, char **cmds,
 	if (token)
 	{
 		ex = _atoi(token);
-		if (ex < 0)
+		if (_isnumeric(token) || ex < 0)
 		{
-			char *ptr;
+			char *ptr = "exit";
 
-			ptr = _custom_err(_generate_error(cmds, av, counter), "Illegal number\n");
+			ptr = _strcat(_custom_err(_custom_err(_generate_error(&ptr, av, counter),
+						"Illegal number"), token), "\n");
 			_put_error(ptr), free(ptr), ex = 2;
 		}
 	}

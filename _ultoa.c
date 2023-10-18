@@ -116,3 +116,20 @@ int _isalpha(int c)
 		return (1);
 	return (0);
 }
+
+/**
+ * _isnumeric - checks if a string is a digit
+ * @c: string to be tested
+ * Return:  0 (Success)
+ *			1 (Failure)
+ */
+int _isnumeric(char *c)
+{
+	while (*c)
+	{
+		if (*c < 48 || *c > 57)
+			return (1);
+		c++;
+	}
+	return (0);
+}
