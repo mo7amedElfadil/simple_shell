@@ -8,12 +8,13 @@
  * Return: 0 if succeeded, -1 in case of failure.
  */
 
-int cd_cmd__(char *target, char *previous, char **envp)
+int cd_cmd__(char *target, char *previous, char **envp, int a)
 {
 	char *pwd = "PWD";
 
 	if (chdir(target) == -1)
 	{
+		free(target);
 		perror("Error");
 		return (-1);
 	}
@@ -25,6 +26,8 @@ int cd_cmd__(char *target, char *previous, char **envp)
 		if (_setenv("OLDPWD", previous, 1, envp) == -1)
 			return (-1);
 		print_envp(0, &pwd, envp);
+		if (a)
+		free(target);
 	}
 	return (0);
 }

@@ -109,7 +109,7 @@ void exit_handler(int line, int term_f, int span,
 
 int cd_cmd(int argc, char *argv[], char *envp[]);
 char *cd_cmd_dd(char *en_v_PWD);
-int cd_cmd__(char *target, char *previous, char **envp);
+int cd_cmd__(char *target, char *previous, char **envp, int a);
 int cd_cmd_sup(char *target, char *previous, char **envp);
 int is_v_path(const char *path);
 int cd_cmd_par(char *target, char **envp);
