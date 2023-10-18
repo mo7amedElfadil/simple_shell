@@ -131,7 +131,11 @@ char *prepend_pwd(char *cmds, char **envp)
 	free(pwd), free(tok);
 	return (cmds);
 }
-
+/**
+ * comment - determine if a token is #
+ * @token: the token to check
+ * Return: 0 if true, otherwise > 0
+ */
 int comment(char *token)
 {
 	return (_strcmp(token, "#"));
