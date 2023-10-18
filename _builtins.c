@@ -44,12 +44,8 @@ int print_err(int span, char **cmds, char **envp)
  */
 int alias(int span, char **cmds, char **envp)
 {
-	char *result = _itoa(errno);
+	make_void(3, span, **cmds, **envp);
 
-	make_void(3, span, cmds, envp);
-	_put_buffer(result);
-	free(result);
-	_put_buffer("\n");
 	return (0);
 }
 /**
