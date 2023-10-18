@@ -12,7 +12,7 @@ char *cmd_path(char **envp, char *cmd)
 	int i = 0;
 	unsigned int len = 0;
 	char *token = NULL, delim[] = "=:", ENV[PATH_MAX];
-	DIR *dir;
+	DIR *dir = 0;
 	struct dirent *entity;
 
 	if (!envp)
@@ -25,8 +25,8 @@ char *cmd_path(char **envp, char *cmd)
 	if (len)
 	{
 		_memcpy(ENV, envp[i], len + 1);
-		token = strtok(ENV, delim);
-		while ((token = strtok(NULL, delim)))
+		token = _strtok(ENV, delim);
+		while ((token = _strtok(NULL, delim)))
 		{
 			dir = opendir(token);
 			if (dir)
@@ -61,6 +61,13 @@ int _path_cat(char **envp, char **cmds)
 {
 	char *token = NULL;
 
+	if (!strncmp(*cmds, "./", 2))
+	{
+
+		*cmds = cut_prefix(*cmds, 2);
+		*cmds = prepend_pwd(*cmds, envp);
+		return (0);
+	}
 	token = cmd_path(envp, cmds[0]);
 	if (token)
 	{
@@ -80,13 +87,7 @@ int _path_cat(char **envp, char **cmds)
 		return (0);
 
 	}
-	else if (!strncmp(*cmds, "./", 2))
-	{
-		*cmds = cut_prefix(*cmds, 2);
-		*cmds = prepend_pwd(*cmds, envp);
-		return (0);
-	}
-	/* errno = ENOENT; */
+		/* errno = ENOENT; */
 	return (1);
 
 }

@@ -22,7 +22,7 @@ int _execute(int span, char **cmds, char *input,
 
 	flag = choose_mode(span, cmds, envp);
 
-	if (flag)
+	if (flag || !_strncmp(*cmds, "./", 2))
 		cat = !(_path_cat(envp, cmds));
 	if (flag && cat && !access(*cmds, F_OK))
 	{
