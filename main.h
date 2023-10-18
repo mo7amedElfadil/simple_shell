@@ -58,6 +58,7 @@ void _free_envp(char **envp);
 void _free_cd(int n, ...);
 
 int _tokenize(int term_f, char **envp, char **av, size_t counter);
+char *var_expansion(char *var, char **envp);
 char *cmd_path(char **envp, char *cmd);
 int _path_cat(char **envp, char **cmds);
 char *cut_prefix(char *cmds, int size);
@@ -78,6 +79,7 @@ unsigned int _strspn(char *s, char *accept);
 char *_ultoa(size_t x);
 int _atoi(char *s);
 char *_itoa(int x);
+int _isalpha(int c);
 
 char *_generate_error(char **cmds, char **av, size_t counter);
 char *_custom_err(char *err_msg, char *msg);

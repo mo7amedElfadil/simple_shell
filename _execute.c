@@ -16,7 +16,7 @@
 int _execute(int span, char **cmds, char *input,
 		char **envp, char **av, size_t count, int term_f)
 {
-	int status, flag = 0, cat = 1;
+	int status, flag = 0, cat = 0;
 	pid_t pid;
 	char *err_msg = NULL;
 
@@ -27,7 +27,8 @@ int _execute(int span, char **cmds, char *input,
 	if (flag && cat && !access(*cmds, F_OK))
 	{
 		pid = fork();
-		exec_fork(pid, &status, err_msg, span, cmds, envp, input, av, count);
+		return (exec_fork(pid, &status, err_msg,
+					span, cmds, envp, input, av, count));
 	}
 	else
 	{
