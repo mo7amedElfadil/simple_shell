@@ -131,3 +131,8 @@ char *prepend_pwd(char *cmds, char **envp)
 	free(pwd), free(tok);
 	return (cmds);
 }
+
+int comment(char *token)
+{
+	return (_strcmp(token, "#"));
+}

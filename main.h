@@ -84,6 +84,8 @@ char *cmd_path(char **envp, char *cmd);
 int _path_cat(char **envp, char **cmds);
 char *cut_prefix(char *cmds, int size);
 char *prepend_pwd(char *cmds, char **envp);
+int comment(char *token);
+
 
 int _execute(int span, char **cmds, char *input,
 		char **envp, char **av, size_t counter, int term_f);
