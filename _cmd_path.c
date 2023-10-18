@@ -138,5 +138,5 @@ char *prepend_pwd(char *cmds, char **envp)
  */
 int comment(char *token)
 {
-	return (_strcmp(token, "#"));
+	return (_strncmp(token, "#", 1));
 }

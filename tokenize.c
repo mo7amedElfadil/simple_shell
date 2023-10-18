@@ -71,19 +71,19 @@ char **_tokenize_n_al(int line, char *input, char **envp)
 
 	del1 = _strcspn(input, " "), del2 = _strcspn(input, "\t");
 	delim = (del1 > del2) ? del2 : del1, token =  _strtok(input, " \t\r\n\v\f");
+	if (!token)
+	{	_frees_buff(-1, cmds, NULL);
+		return (NULL); }
 	if (!comment(token))
 	{	free(cmds);
-		return (NULL); }
-	if (!token)
-	{	_frees_buff(-1, cmds, input);
-		return (NULL); }
+		return (NULL);	}
 	if (token[0] == '$')
 	{
 		var = var_expansion(token, envp);
 		flag = var ? 1 : 0; }
-		cmds[i] = (flag ? malloc(_strlen(var) + 1) : malloc(_strlen(token) + 1));
-				(flag ? _strcpy(cmds[i], var) : _strcpy(cmds[i], token));
-				(flag ? free(var) : (void) 0), flag = 0;
+	cmds[i] = (flag ? malloc(_strlen(var) + 1) : malloc(_strlen(token) + 1));
+	(flag ? _strcpy(cmds[i], var) : _strcpy(cmds[i], token));
+	(flag ? free(var) : (void) 0), flag = 0;
 	if (delim < line)
 	{
 		while (cmds[i])
@@ -94,16 +94,15 @@ char **_tokenize_n_al(int line, char *input, char **envp)
 				i--;
 				break; }
 			if (!comment(token))
-			{
-				cmds[i] = 0;
-				return (cmds); }
+			{	cmds[i] = 0;
+				break;	}
 			if (token[0] == '$')
 			{
 				var = var_expansion(token, envp);
 				flag = var ? 1 : 0; }
-				cmds[i] = (flag ? malloc(_strlen(var) + 1) : malloc(_strlen(token) + 1));
-				(flag ? _strcpy(cmds[i], var) : _strcpy(cmds[i], token));
-				(flag ? free(var) : (void) 0), comment(cmds[i]); }
+			cmds[i] = (flag ? malloc(_strlen(var) + 1) : malloc(_strlen(token) + 1));
+			(flag ? _strcpy(cmds[i], var) : _strcpy(cmds[i], token));
+			(flag ? free(var) : (void) 0); }
 	} cmds[i + 1] = NULL;
 	return (cmds);
 }
