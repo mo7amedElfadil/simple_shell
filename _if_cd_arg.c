@@ -5,6 +5,7 @@
  * @target: the target path we want to change our dir to it.
  * @previous: the previous path (PWD).
  * @envp: envirement variable.
+ * @a: cd_cmd if OLDPWD is not in envp, 1 else 0
  * Return: 0 if succeeded, -1 in case of failure.
  */
 

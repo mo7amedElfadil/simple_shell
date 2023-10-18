@@ -104,4 +104,15 @@ int _atoi(char *s)
 	return (n_count % 2 == 0 ? num : -num);
 }
 
-
+/**
+ * _isalpha - checks for alphabetical characters.
+ * @c: character to test if is alphabetical
+ * Return: 1 (Success if character is alphabetical)
+ *		   0 (Failure if character is not alphabetical)
+ */
+int _isalpha(int c)
+{
+	if ((c >= 65 && c <= 90) || (c >= 97 && c <= 122))
+		return (1);
+	return (0);
+}

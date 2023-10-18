@@ -72,6 +72,8 @@ void _free_envp(char **envp);
 void _free_cd(int n, ...);
 
 int _tokenize(int term_f, char **envp, char **av, size_t counter);
+int _tokenize_newline(int *line, int term_f,
+		char **envp, char **av, size_t counter);
 char **_tokenize_n_al(int line, char *input, char **envp);
 char *var_expansion(char *var, char **envp);
 int cmds_n_elm(char **cmds);

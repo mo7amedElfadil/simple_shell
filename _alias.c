@@ -11,6 +11,6 @@ int alias(int span, char **cmds, char **envp)
 {
 
 	make_void(3, span, **cmds, **envp);
-
+	_put_buffer("alias\n");
 	return (0);
 }

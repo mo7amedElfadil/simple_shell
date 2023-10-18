@@ -1,5 +1,4 @@
 #include "main.h"
-#include <ctype.h>
 
 /**
  * _tokenize - tokenize the input line
@@ -12,30 +11,50 @@
  */
 int _tokenize(int term_f, char **envp, char **av, size_t counter)
 {
-	int line = 0;
-	size_t len = BUFF;
-	char *input = malloc(len), **cmds = NULL, eq = ' ', null = '\0', tab = '\t';
+	int line = 0, ret = 0;
 
-	line = getline(&input, &len, stdin);
-	if (line < 0 || !_strncmp(input, "exit", 4))
-		exit_handler(line, term_f, -1, cmds, envp, input, av, counter);
-	if (!_strncmp(input, "alias", 5) &&
-			!(input[5] == eq || input[5] == null || input[5] == tab))
-	{
-		_put_buffer("inside the alias block\n"), free(input);
-		return (EXIT_SUCCESS);
-	}
-	else
-		cmds = _tokenize_n_al(line, input, envp);
+	do {
+		if (term_f)
+			_put_buffer("($) ");
+
+		ret = _tokenize_newline(&line, term_f, envp, av, counter);
+	} while (line > 0);
+	return (ret);
+}
+
+
+/**
+ * _tokenize_newline - tokenization of input. Made to be looped
+ * @line: length of line from getline
+ * @term_f: terminal flag (isatty)
+ * @envp: environmental pointer
+ * @av: argument vector
+ * @counter: the counter
+ * Return: 1 when exit has been input
+ *			0 otherwise
+ */
+
+int _tokenize_newline(int *line, int term_f,
+		char **envp, char **av, size_t counter)
+{
+	int span = 0;
+	size_t len = BUFF;
+	char *input = malloc(len), **cmds = NULL;
+
+	*line = getline(&input, &len, stdin);
+	if (*line < 0 || !_strncmp(input, "exit", 4))
+		exit_handler(*line, term_f, -1, cmds, envp, input, av, counter);
+	cmds = _tokenize_n_al(*line, input, envp);
+	span = cmds_n_elm(cmds);
 	if (!term_f)
 	{
-		_execute(cmds_n_elm(cmds), cmds, input, envp, av, counter, term_f);
+		_execute(span, cmds, input, envp, av, counter, term_f);
 		_tokenize(term_f, envp, av, counter);
 		exit_handler(1, 0, 0, NULL, NULL, NULL, av, counter);
 	}
-	return (_execute(cmds_n_elm(cmds), cmds, input, envp, av, counter, term_f));
-}
+	return (_execute(span, cmds, input, envp, av, counter, term_f));
 
+}
 
 /**
  * _tokenize_n_al - tokenize the input line for the non alias cmds.
@@ -100,19 +119,6 @@ char *var_expansion(char *var, char **envp)
 	return (0);
 }
 
-
-/**
- * _isalpha - checks for alphabetical characters.
- * @c: character to test if is alphabetical
- * Return: 1 (Success if character is alphabetical)
- *		   0 (Failure if character is not alphabetical)
- */
-int _isalpha(int c)
-{
-	if ((c >= 65 && c <= 90) || (c >= 97 && c <= 122))
-		return (1);
-	return (0);
-}
 /**
  * cmds_n_elm - calculate the (number of tokens - 1) or index of last token.
  * @cmds: array of cmd after tokenization.
@@ -121,8 +127,9 @@ int _isalpha(int c)
 int cmds_n_elm(char **cmds)
 {
 	int i = 0;
-	if(!cmds)
-	return (0);
+
+	if (!cmds)
+		return (0);
 	while (*cmds)
 		cmds++, i++;
 	return (i - 1);

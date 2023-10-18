@@ -10,67 +10,66 @@
  */
 int cd_cmd(int argc, char *argv[], char *envp[])
 {
-	char *en_v_OPWD = NULL, *en_v_PWD = NULL, *en_v_HOME = NULL;
+	char *OPWD = NULL, *PWD = NULL, *HOME = NULL;
 	char *F_argv = argv[0], *S_argv = argv[1];
 	int a = 0;
 
-	errno = 0, en_v_PWD = get_envalue("PWD", envp, 3); /* errno set to 0*/
-	en_v_OPWD = get_envalue("OLDPWD", envp, 6);
+	errno = 0, PWD = get_envalue("PWD", envp, 3); /* errno set to 0*/
+	OPWD = get_envalue("OLDPWD", envp, 6);
 	if (argc == 2 && strcmp("cd", F_argv) == 0)
 	{
 		if (_strcmp("-", S_argv) == 0)
 		{
-			if (!en_v_OPWD)
-				en_v_OPWD = get_envalue("PWD", envp, 3), a = 1;
-			if (cd_cmd__(en_v_OPWD, en_v_PWD, envp, a) == -1)
+			if (!OPWD)
+				OPWD = get_envalue("PWD", envp, 3), a = 1;
+			if (cd_cmd__(OPWD, PWD, envp, a) == -1)
 				return (-1); }
 		else if (_strcmp("..", S_argv) == 0)
 		{
-			if (cd_cmd_par(en_v_PWD, envp) == -1)
+			if (cd_cmd_par(PWD, envp) == -1)
 				return (-1); }
 		else if (_strcmp(".", S_argv) == 0)
 		{
-			if (_setenv("OLDPWD", en_v_PWD, 1, envp) == -1)
+			if (_setenv("OLDPWD", PWD, 1, envp) == -1)
 				return (-1); }
 		else if (is_v_path(S_argv))
 		{
-			if (cd_cmd_sup(S_argv, en_v_PWD, envp) == -1)
+			if (cd_cmd_sup(S_argv, PWD, envp) == -1)
 				return (-1); }
 		else /*No such file or directory*/
-		{errno = ENOENT, perror("Error1"), errno = 0; /*errno re-set to 0*/
-			_free_cd(3, en_v_PWD, en_v_OPWD, en_v_HOME);
+		{errno = ENOENT, perror("Error"), errno = 0, _free_cd(3, PWD, OPWD, HOME);
 			return (-1); }
 	}
 	else if (argc == 1 && strcmp("cd", F_argv) == 0)
-	{en_v_HOME = get_envalue("HOME", envp, 4);
-		if (cd_cmd_sup(en_v_HOME, en_v_PWD, envp) == -1)
+	{HOME = get_envalue("HOME", envp, 4);
+		if (cd_cmd_sup(HOME, PWD, envp) == -1)
 			return (-1); }
 	else
 	{errno = EINVAL, perror("Error"), errno = 0;
-	_free_cd(3, en_v_PWD, en_v_OPWD, en_v_HOME);
+	_free_cd(3, PWD, OPWD, HOME);
 		return (-1); }
-	a == 0 ? _free_cd(3, en_v_PWD, en_v_OPWD, en_v_HOME) :_free_cd(2, en_v_PWD, en_v_HOME);
+	a == 0 ? _free_cd(3, PWD, OPWD, HOME) : _free_cd(2, PWD, HOME);
 	return (0);
 }
 /**
  * cd_cmd_dd - get the parent directory's path.
- * @en_v_PWD: present working directory's path.
+ * @PWD: present working directory's path.
  * Return: parent's path.
  */
-char *cd_cmd_dd(char *en_v_PWD)
+char *cd_cmd_dd(char *PWD)
 {
-	int x = _strlen(en_v_PWD), i = 0;
+	int x = _strlen(PWD), i = 0;
 
 	x--;
 	do {
-		if (!i && en_v_PWD[x - i] == '/')
-			en_v_PWD[x - i] = 0, i++;
+		if (!i && PWD[x - i] == '/')
+			PWD[x - i] = 0, i++;
 		else
-			en_v_PWD[x - i] = 0;
+			PWD[x - i] = 0;
 		i++;
-	} while (i < x && en_v_PWD[x - i] != '/');
-	en_v_PWD[x - i] = 0;
-	return (en_v_PWD);
+	} while (i < x && PWD[x - i] != '/');
+	PWD[x - i] = 0;
+	return (PWD);
 }
 
 

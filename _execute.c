@@ -19,10 +19,10 @@ int _execute(int span, char **cmds, char *input,
 	int status, flag = 0, cat = 1;
 	pid_t pid;
 	char *err_msg = NULL;
-	if(!cmds)
+
+	if (!cmds)
 		return (EXIT_FAILURE);
 	flag = choose_mode(span, cmds, envp);
-
 	if (flag && access(*cmds, F_OK))
 		cat = !(_path_cat(envp, cmds));
 	if (flag && cat && !access(*cmds, F_OK))
@@ -51,7 +51,6 @@ int _execute(int span, char **cmds, char *input,
 	return (EXIT_SUCCESS);
 }
 
-
 /**
  * exec_fork - Handles the forked process.
  * @pid: process id.
@@ -68,7 +67,6 @@ int _execute(int span, char **cmds, char *input,
 int exec_fork(pid_t pid, int *status, char *err_msg, int span, char **cmds,
 		char **envp, char *input, char **av, size_t count)
 {
-
 		if (pid == -1)
 		{
 			_frees_buff(span, cmds, input), perror("Error");
@@ -84,8 +82,8 @@ int exec_fork(pid_t pid, int *status, char *err_msg, int span, char **cmds,
 			perror("Error"), _frees_buff(span, cmds, input);
 			return (EXIT_FAILURE); }
 		if (WIFEXITED(*status))
-			_frees_buff(span, cmds, input);
-		return (0);
+			_frees_buff(span, cmds, input), errno = (*status / 256);
+					return (0);
 }
 
 /**
