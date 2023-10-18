@@ -94,9 +94,9 @@ int exec_fork(pid_t pid, int *status, char *err_msg, int span, char **cmds,
  */
 int check_echo(char **cmds)
 {
-	int j = (!_strcmp(*cmds, "echo") &&
+	int j = (!_strncmp(*cmds, "echo", 4) &&
 			(cmds[1] ?
-			 ((!_strcmp(cmds[1], "$$") ^ !_strcmp(cmds[1], "$?")))
+			 ((!_strncmp(cmds[1], "$$", 2) ^ !_strncmp(cmds[1], "$?", 2)))
 			 ? 1 : 0 : 0));
 	return (j);
 }

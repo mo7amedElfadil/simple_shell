@@ -12,9 +12,9 @@
  */
 int _tokenize(int term_f, char **envp, char **av, size_t counter)
 {
-	int i = 0, line = 0, delimited = 0;
+	int i = 0, line = 0, delimited = 0, flag = 0;
 	size_t len = BUFF;
-	char *input = malloc(len), *token, **cmds = malloc(sizeof(*cmds) * BUFF);
+	char *input = malloc(len), *token, *var, **cmds = malloc(8 * BUFF);
 
 	line = getline(&input, &len, stdin);
 	if (line < 0 || !_strncmp(input, "exit", 4))
@@ -29,19 +29,20 @@ int _tokenize(int term_f, char **envp, char **av, size_t counter)
 	{
 		while (cmds[i])
 		{
-			i++, token = _strtok(NULL, " \t\r\n\v\f");
+			flag = 0, i++, token = _strtok(NULL, " \t\r\n\v\f");
 			if (!token)
 			{
 				i--;
 				break; }
 			if (token[0] == '$')
 			{
-				char *var = var_expansion(token, envp);
-
+				var = var_expansion(token, envp);
 				if (var)
-					_strcpy(token, var), free(var); }
-			cmds[i] = malloc(_strlen(token) + 1), _strcpy(cmds[i], token);
-		}
+					flag = 1; }
+			if (flag)
+				cmds[i] = malloc(_strlen(var) + 1), _strcpy(cmds[i], var), free(var);
+			else
+				cmds[i] = malloc(_strlen(token) + 1), _strcpy(cmds[i], token); }
 	}
 	cmds[i + 1] = NULL;
 	if (!term_f)

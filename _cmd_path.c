@@ -99,7 +99,7 @@ int _path_cat(char **envp, char **cmds)
  */
 char *cut_prefix(char *cmds, int size)
 {
-	char tok[100];
+	char tok[1000];
 	int len = _strlen(cmds), i = 0;
 
 	while (cmds[i + size] && (i + size) < len)
