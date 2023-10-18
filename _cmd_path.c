@@ -99,14 +99,14 @@ int _path_cat(char **envp, char **cmds)
  */
 char *cut_prefix(char *cmds, int size)
 {
-	char tok[1000];
 	int len = _strlen(cmds), i = 0;
+	char *tok = malloc(len - size + 1);
 
 	while (cmds[i + size] && (i + size) < len)
 		tok[i] = cmds[i + size], i++;
 	tok[i] = 0;
 	cmds = _realloc(cmds, len + 1, _strlen(tok) + 1);
-	_strcpy(cmds, tok);
+	_strcpy(cmds, tok), free(tok);
 	return (cmds);
 }
 
@@ -118,15 +118,16 @@ char *cut_prefix(char *cmds, int size)
  */
 char *prepend_pwd(char *cmds, char **envp)
 {
-	char tok[100], *pwd;
 	int len = _strlen(cmds);
+	char *tok, *pwd;
 
 	pwd = get_envalue("PWD", envp, 3);
+	tok = malloc(_strlen(pwd) + len + 2);
 	_strcpy(tok, pwd);
 	_strcat(tok, "/");
 	_strcat(tok, cmds);
 	cmds = _realloc(cmds, len + 1, _strlen(tok) + 1);
 	_strcpy(cmds, tok);
-	free(pwd);
+	free(pwd), free(tok);
 	return (cmds);
 }

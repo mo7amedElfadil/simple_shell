@@ -136,7 +136,7 @@ char *get_envalue(char *var, char **envp, int len)
 
 	while (envp[i] && strncmp(envp[i], var, len) != 0)
 		i++;
-	if (envp[i])
+	if (envp[i] && (envp[i][len] == '='))
 	{
 		char *result = NULL;
 
