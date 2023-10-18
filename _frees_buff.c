@@ -69,3 +69,17 @@ void _free_cd(int n, ...)
 	}
 	va_end(ap);
 }
+/**
+ * is_nulled - checks if the first char is null byte
+ * @cmds: commands array
+ * Return: 1 if nulled 0 otherwise
+ */
+int is_nulled(char **cmds)
+{
+	if (cmds && *cmds)
+	{
+		if (!**cmds)
+			return (1);
+	}
+	return (0);
+}

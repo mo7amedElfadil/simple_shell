@@ -10,7 +10,7 @@
  */
 int print_pid(int span, char **cmds, char **envp)
 {
-	char *result = _itoa(getppid());
+	char *result = _itoa(getpid());
 
 	make_void(3, span, **cmds, **envp);
 	_put_buffer(result);

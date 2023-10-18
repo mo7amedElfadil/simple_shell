@@ -70,6 +70,7 @@ int _strcspn(char *s1, char *s2);
 void _frees_buff(int span, char **cmds, char *input);
 void _free_envp(char **envp);
 void _free_cd(int n, ...);
+int is_nulled(char **cmds);
 
 int _tokenize(int term_f, char **envp, char **av, size_t counter);
 int _tokenize_newline(int *line, int term_f,

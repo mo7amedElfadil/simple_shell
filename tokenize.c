@@ -76,7 +76,15 @@ char **_tokenize_n_al(int line, char *input, char **envp)
 	{
 		_frees_buff(-1, cmds, input);
 		return (NULL); }
-	cmds[i] = malloc(_strlen(token) + 1), _strcpy(cmds[i], token);
+	if (token[0] == '$')
+	{
+		var = var_expansion(token, envp);
+		if (var)
+			flag = 1; }
+		cmds[i] = (flag ? malloc(_strlen(var) + 1) : malloc(_strlen(token) + 1));
+				(flag ? _strcpy(cmds[i], var) : _strcpy(cmds[i], token));
+				(flag ? free(var) : (void) 0);
+	flag = 0;
 	if (delimited < line)
 	{
 		while (cmds[i])
@@ -91,10 +99,9 @@ char **_tokenize_n_al(int line, char *input, char **envp)
 				var = var_expansion(token, envp);
 				if (var)
 					flag = 1; }
-			if (flag)
-				cmds[i] = malloc(_strlen(var) + 1), _strcpy(cmds[i], var), free(var);
-			else
-				cmds[i] = malloc(_strlen(token) + 1), _strcpy(cmds[i], token); }
+				cmds[i] = (flag ? malloc(_strlen(var) + 1) : malloc(_strlen(token) + 1));
+				(flag ? _strcpy(cmds[i], var) : _strcpy(cmds[i], token));
+				(flag ? free(var) : (void) 0); }
 	}
 	cmds[i + 1] = NULL;
 	return (cmds);
@@ -114,8 +121,12 @@ char *var_expansion(char *var, char **envp)
 		_strcpy(env, var);
 		env = cut_prefix(env, 1);
 		result = get_envalue(env, envp, _strlen(env)), free(env);
+		if (!result)
+			result = malloc(2), *result = 0;
+
 		return (result);
 	}
+
 	return (0);
 }
 

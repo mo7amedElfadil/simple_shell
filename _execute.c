@@ -20,8 +20,11 @@ int _execute(int span, char **cmds, char *input,
 	pid_t pid;
 	char *err_msg = NULL;
 
-	if (!cmds)
+	if (!cmds || is_nulled(cmds))
+	{
+		_frees_buff(span, cmds, input);
 		return (EXIT_FAILURE);
+	}
 	flag = choose_mode(span, cmds, envp);
 	if (flag && access(*cmds, F_OK))
 		cat = !(_path_cat(envp, cmds));
