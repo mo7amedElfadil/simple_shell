@@ -16,13 +16,13 @@
 int _execute(int span, char **cmds, char *input,
 		char **envp, char **av, size_t count, int term_f)
 {
-	int status, flag = 0, cat = 0;
+	int status, flag = 0, cat = 1;
 	pid_t pid;
 	char *err_msg = NULL;
 
 	flag = choose_mode(span, cmds, envp);
 
-	if (flag || !_strncmp(*cmds, "./", 2))
+	if (flag && access(*cmds, F_OK))
 		cat = !(_path_cat(envp, cmds));
 	if (flag && cat && !access(*cmds, F_OK))
 	{

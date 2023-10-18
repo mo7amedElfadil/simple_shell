@@ -61,7 +61,7 @@ int _path_cat(char **envp, char **cmds)
 {
 	char *token = NULL;
 
-	if (!strncmp(*cmds, "./", 2))
+	if (!_strncmp(*cmds, "./", 2))
 	{
 
 		*cmds = cut_prefix(*cmds, 2);
