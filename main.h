@@ -26,6 +26,20 @@
 
 
 /**
+ * struct list_t - linked list's struct for alias function.
+ * @al_cmd: string cmd for the command
+ * @al_name: the name of the alias.
+ * @next: pointer to next struct of a singly linked list.
+ */
+typedef struct list_t
+{
+	char *al_name;
+	char *al_cmd;
+	struct list_t *next;
+} al_list;
+
+
+/**
  * struct _builtin - builtin function struct
  * @cmd: string specifier
  * @func: function pointer
@@ -58,7 +72,11 @@ void _free_envp(char **envp);
 void _free_cd(int n, ...);
 
 int _tokenize(int term_f, char **envp, char **av, size_t counter);
+char **_tokenize_n_al(int line, char *input, char **envp);
 char *var_expansion(char *var, char **envp);
+int cmds_n_elm(char **cmds);
+
+
 char *cmd_path(char **envp, char *cmd);
 int _path_cat(char **envp, char **cmds);
 char *cut_prefix(char *cmds, int size);
