@@ -113,9 +113,9 @@ int choose_mode(int span, char **cmds, char **envp)
 {
 	int i = 0, j = check_echo(cmds);
 	_built builtins[] = {
-		{"cd", cd_cmd}, {"$$", print_pid}, {"$?", print_err},
-		{"env", print_envp}, {"setenv", _setenv_cmd},
-		{"unsetenv", _unsetenv_cmd}, {"alias", alias}, {NULL, NULL}};
+		{"cd"}, {"$$"}, {"$?"},
+		{"env"}, {"setenv"},
+		{"unsetenv"}, {"alias"}, {NULL}};
 
 	for (i = 0; builtins[i].cmd; i++)
 	{

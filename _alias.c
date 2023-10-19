@@ -7,24 +7,23 @@
  * @envp: environmental pointer
  * Return: 0 on success.
  */
-int alias(int span, char **cmds, char **envp)
+char *alias(int span, char **cmds, char **envp)
 {
 	static al_list *head;
 	al_list *srch = head;
 	int i = 1, len = 0;
 	char *name = NULL, *value = NULL, not[1000];
 
+	(void)envp;
 	if (!cmds && head)
 	{	free_linked_list(head), head = NULL;
 		return (0); }
-	(void)envp;
 	if (!span)
 		print_linked_list(NULL, head);
 	else
 	{
-		while (cmds[i])
-		{
-			len = _strlen(cmds[i]), _strcpy(not, cmds[i]), name = strtok(not, "=");
+		while (i <= span && cmds[i])
+		{	len = _strlen(cmds[i]), _strcpy(not, cmds[i]), name = strtok(not, "=");
 			if (_strcspn(cmds[i], "\'") < len)
 				value = strtok(NULL, "'");
 			else if (_strcspn(cmds[i], "\"") < len)
@@ -32,7 +31,9 @@ int alias(int span, char **cmds, char **envp)
 			else
 				value = strtok(NULL, " ");
 			if (!value)
+			{
 				print_linked_list(name, head);
+			}
 			else
 			{
 				while (srch && srch->name && strcmp(name, srch->name))
@@ -48,7 +49,19 @@ int alias(int span, char **cmds, char **envp)
 			}
 			i++; }
 	}
-	return (0);
+	return (0); }
+/**
+ * _list_value - returns value
+ * @head: head of list
+ * @name: name of member
+ * Return: value of member
+ */
+char *_list_value(al_list *head, char *name)
+{
+	while (head && _strcmp(head->name, name))
+		head = head->next;
+	return (head->value);
+
 }
 /**
  * add_node_end - adds a new node at the end of a al_list of alias.
@@ -101,7 +114,7 @@ al_list *add_node_linked_list(al_list **head, char *nam, char *val)
  */
 void print_linked_list(char *name, al_list *head)
 {
-	int a = 0, b = 0, c = 0;
+	int a = 0, b = 0;
 
 	if (!head)
 		return;
@@ -117,14 +130,11 @@ void print_linked_list(char *name, al_list *head)
 		}
 		if (a == 1)
 		{
-			c = _strcspn(head->value, " ") < _strlen(head->value);
 			_put_buffer(head->name);
 			_put_buffer("=");
-			if (c)
-				_put_buffer("'");
+			_put_buffer("'");
 			_put_buffer(head->value);
-			if (c)
-				_put_buffer("'");
+			_put_buffer("'");
 			_put_buffer("\n");
 			if (b)
 				break;

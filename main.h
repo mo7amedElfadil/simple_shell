@@ -42,12 +42,10 @@ typedef struct list_t
 /**
  * struct _builtin - builtin function struct
  * @cmd: string specifier
- * @func: function pointer
  */
 typedef struct _builtin
 {
 	char *cmd;
-	int (*func)(int, char **, char **);
 } _built;
 
 /* your protos goes here */
@@ -137,10 +135,11 @@ int choose_mode(int span, char **cmds, char **envp);
 int print_pid(int span, char **cmds, char **envp);
 
 int print_err(int span, char **cmds, char **envp);
-int alias(int span, char **cmds, char **envp);
+char *alias(int span, char **cmds, char **envp);
 al_list *add_node_linked_list(al_list **head, char *nam, char *val);
 void print_linked_list(char *name, al_list *head);
 void free_linked_list(al_list *head);
+char *_list_value(al_list *head, char *name);
 
 /* int (*)(int,  char **, char **) */
 /**
