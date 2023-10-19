@@ -95,6 +95,7 @@ void exit_handler(int line, int term_f, int span, char **cmds,
 	}
 	if (envp)
 		_free_envp(envp);
+	alias(0, NULL, NULL);
 	if (cmds)
 		_frees_buff(span, cmds, input);
 	else if (!cmds)

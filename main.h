@@ -27,8 +27,8 @@
 
 /**
  * struct list_t - linked list's struct for alias function.
- * @al_cmd: string cmd for the command
- * @al_name: the name of the alias.
+ * @value: string cmd for the command
+ * @name: the name of the alias.
  * @next: pointer to next struct of a singly linked list.
  */
 typedef struct list_t

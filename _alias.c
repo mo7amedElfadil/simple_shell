@@ -14,7 +14,7 @@ int alias(int span, char **cmds, char **envp)
 	int i = 1, len = 0;
 	char *name = NULL, *value = NULL, not[1000];
 
-	if (!cmds)
+	if (!cmds && head)
 	{	free_linked_list(head), head = NULL;
 		return (0); }
 	(void)envp;
