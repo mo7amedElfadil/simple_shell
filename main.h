@@ -33,8 +33,8 @@
  */
 typedef struct list_t
 {
-	char *al_name;
-	char *al_cmd;
+	char *name;
+	char *value;
 	struct list_t *next;
 } al_list;
 
@@ -86,7 +86,6 @@ char *cut_prefix(char *cmds, int size);
 char *prepend_pwd(char *cmds, char **envp);
 int comment(char *token);
 
-
 int _execute(int span, char **cmds, char *input,
 		char **envp, char **av, size_t counter, int term_f);
 int exec_fork(pid_t pid, int *status, char *err_msg, int span, char **cmds,
@@ -104,6 +103,8 @@ int _atoi(char *s);
 char *_itoa(int x);
 int _isalpha(int c);
 int _isnumeric(char *c);
+int is_cmd(char *cmd, char *cmd_name);
+
 
 char *_generate_error(char **cmds, char **av, size_t counter);
 char *_custom_err(char *err_msg, char *msg);
@@ -137,6 +138,9 @@ int print_pid(int span, char **cmds, char **envp);
 
 int print_err(int span, char **cmds, char **envp);
 int alias(int span, char **cmds, char **envp);
+al_list *add_node_linked_list(al_list **head, char *nam, char *val);
+void print_linked_list(char *name, al_list *head);
+void free_linked_list(al_list *head);
 
 /* int (*)(int,  char **, char **) */
 /**
@@ -149,38 +153,6 @@ typedef struct _intptr
 	char *c;
 	void *(*func)(int *, char *);
 } _ip;
-
-
-#ifndef LIST_H
-#define LIST_H
-/**
- * struct list_cmd - singly linked list
- * @cmd: pointer to  char.
- * @linker: pointer to  char.
- * @next: points to struct(next node).
- *
- * Description: singly linked list node structure
- */
-typedef struct list_cmd
-{
-	char *cmd;
-	char *linker;
-	struct list_cmd *next;
-} list_c;
-
-
-/* Function prototypes */
-size_t print_list(list_c *h);
-list_c *add_node(list_c **head, char *str);
-list_c *add_node_end(list_c **head, char *str);
-void free_list(list_c *head);
-list_c *add_nodeint(list_c **head, int n);
-
-
-#endif /* LIST_H */
-
-
-
 #endif /* HEADER */
 
 

@@ -149,5 +149,3 @@ int choose_mode(int span, char **cmds, char **envp)
 	}
 	return (1);
 }
-
-
