@@ -19,15 +19,8 @@ int _setenv_cmd(int argc, char **argv, char **envp)
 		if (_setenv(argv[1], argv[2], 1, envp) == -1)
 			return (-1);
 	}
-	else if (argc == 2)
-	{
-		if (_setenv(argv[1], "\0", 1, envp) == -1)
-			return (-1);
-	}
 	else
-	{
 		return (-1);
-	}
 	return (0);
 }
 /**
