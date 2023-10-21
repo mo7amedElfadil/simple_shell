@@ -8,47 +8,47 @@
  * @envp: envirement variable.
  * Return: 0 if succeeded, -1 in case of failure.
  */
-int cd_cmd(int argc, char *argv[], char *envp[])
+int cd_cmd(int argc, char *argv[], char *ep[])
 {
-	char *OPWD = NULL, *PWD = NULL, *HOME = NULL;
+	char *OD = NULL, *PWD = NULL, *HOME = NULL, *P_HOME = NULL;
 	char *F_argv = argv[0], *S_argv = argv[1];
 	int a = 0;
 
-	errno = 0, PWD = get_envalue("PWD", envp, 3); /* errno set to 0*/
-	OPWD = get_envalue("OLDPWD", envp, 6);
+	errno = 0, PWD = get_envalue("PWD", ep, 3), OD = get_envalue("OLDPWD", ep, 6);
 	if (argc == 2 && strcmp("cd", F_argv) == 0)
 	{
 		if (_strcmp("-", S_argv) == 0)
 		{
-			if (!OPWD)
-				OPWD = get_envalue("PWD", envp, 3), a = 1;
-			if (cd_cmd__(OPWD, PWD, envp, a) == -1)
+			if (!OD)
+				OD = get_envalue("PWD", ep, 3), a = 1;
+			if (cd_cmd__(OD, PWD, ep, a) == -1)
 				return (-1); }
 		else if (_strcmp("..", S_argv) == 0)
 		{
-			if (cd_cmd_par(PWD, envp) == -1)
+			if (cd_cmd_par(PWD, ep) == -1)
 				return (-1); }
 		else if (_strcmp(".", S_argv) == 0)
 		{
-			if (_setenv("OLDPWD", PWD, 1, envp) == -1)
+			if (_setenv("OLDPWD", PWD, 1, ep) == -1)
 				return (-1); }
 		else if (is_v_path(S_argv))
 		{
-			if (cd_cmd_sup(S_argv, PWD, envp) == -1)
+			if (cd_cmd_sup(S_argv, PWD, ep) == -1)
 				return (-1); }
 		else /*No such file or directory*/
-		{errno = ENOENT, perror("Error"), errno = 0, _free_cd(3, PWD, OPWD, HOME);
+		{errno = ENOENT, _free_cd(3, PWD, OD, HOME);
 			return (-1); }
 	}
 	else if (argc == 1 && strcmp("cd", F_argv) == 0)
-	{HOME = get_envalue("HOME", envp, 4);
-		if (cd_cmd_sup(HOME, PWD, envp) == -1)
+	{HOME = get_envalue("HOME", ep, 4);
+		P_HOME = HOME ? HOME : PWD;
+		if (cd_cmd_sup(P_HOME, PWD, ep) == -1)
 			return (-1); }
 	else
 	{errno = EINVAL, perror("Error"), errno = 0;
-	_free_cd(3, PWD, OPWD, HOME);
+	_free_cd(3, PWD, OD, HOME);
 		return (-1); }
-	a == 0 ? _free_cd(3, PWD, OPWD, HOME) : _free_cd(2, PWD, HOME);
+	a == 0 ? _free_cd(3, PWD, OD, HOME) : _free_cd(2, PWD, HOME);
 	return (0);
 }
 /**
