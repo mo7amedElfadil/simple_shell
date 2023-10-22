@@ -27,9 +27,9 @@ int main(int ac, char **av, char *envp_origin[])
 		if (!term_f || err == -1)
 			break;
 	}
+	alias(0, NULL, envp);
 	if (envp)
 		_free_envp(envp);
-	alias(0, NULL, NULL);
 
 	return (0);
 }

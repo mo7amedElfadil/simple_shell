@@ -19,16 +19,6 @@ int _put_error(char *c)
 {
 	return (write(STDERR_FILENO, c, _strlen(c)));
 }
-/**
- * _put_buff - prints buffer using write
- * @c: string pointer
- * Return: number of bytes written
- */
-int _put_buff(char c)
-{
-	return (write(STDOUT_FILENO, &c, 1));
-}
-
 
 /**
  * _generate_error - generate error message
@@ -64,9 +54,10 @@ char *_custom_err(char *err_msg, char *msg)
 	return (err_msg);
 }
 /**
- * _cd_err - print to stdout a personnalized error msg for cd to unknown directory.
+ * _cd_err - print to stdout a personnalized error msg for cd to unknown dir.
  * @err_msg: from the genertor error
  * @msg: to be added manually.
+ * @cmds: array of tokens/commands
  * Return: the new customized error message.
  */
 char *_cd_err(char *err_msg, char *msg, char **cmds)

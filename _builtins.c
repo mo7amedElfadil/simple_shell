@@ -93,9 +93,9 @@ void exit_handler(int line, int term_f, int span, char **cmds,
 			_put_error(ptr), free(ptr), ex = 2;
 		}
 	}
+	alias(0, NULL, envp);
 	if (envp)
 		_free_envp(envp);
-	alias(0, NULL, NULL);
 	if (cmds)
 		_frees_buff(span, cmds, input);
 	else if (!cmds)

@@ -19,7 +19,7 @@ char *cmd_path(char **envp, char *cmd)
 		return (0);
 	while (envp[i] && _strncmp(envp[i], "PATH", 4))
 		i++;
-	if (!envp[i])
+	if (!envp[i] || !(envp[i][4] == '='))
 		return (NULL);
 	len = _strlen(envp[i]);
 	if (len)

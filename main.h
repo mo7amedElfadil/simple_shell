@@ -134,13 +134,15 @@ void make_void(int num, ...);
 int choose_mode(int span, char **cmds, char **envp);
 
 int print_pid(int span, char **cmds, char **envp);
-
 int print_err(int span, char **cmds, char **envp);
+
 char *alias(int span, char **cmds, char **envp);
 al_list *add_node_linked_list(al_list **head, char *nam, char *val);
 void print_linked_list(char *name, al_list *head);
 void free_linked_list(al_list *head);
 char *_list_value(al_list *head, char *name);
+char *_find_alias(al_list *head, char *name);
+char *_cmd_replace(char *cmds, char *value);
 
 /* int (*)(int,  char **, char **) */
 /**

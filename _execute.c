@@ -25,6 +25,7 @@ int _execute(int span, char **cmds, char *input,
 		_frees_buff(span, cmds, input);
 		return (EXIT_FAILURE);
 	}
+	*cmds = alias(0, cmds, 0);
 	flag = choose_mode(span, cmds, envp);
 	if (flag && access(*cmds, F_OK))
 		cat = !(_path_cat(envp, cmds));
@@ -40,12 +41,12 @@ int _execute(int span, char **cmds, char *input,
 		{
 			if (errno == ENOENT)
 				err_msg = _custom_err(_generate_error(cmds, av, count),
-						"not found\n"), errno = 127, _put_error(err_msg), free(err_msg);
+						"not found\n"),  _put_error(err_msg), free(err_msg);
 			else if (errno == 9)
 				err_msg = _cd_err(_generate_error(cmds, av, count),
-						"can't cd to ", cmds), errno = 127, _put_error(err_msg), free(err_msg);
+						"can't cd to ", cmds), _put_error(err_msg), free(err_msg);
 			else if (errno)
-				err_msg = _generate_error(cmds, av, count), errno = 127,
+				err_msg = _generate_error(cmds, av, count),
 						_put_error(err_msg), free(err_msg);
 			errno = 127;
 			if (!term_f)
@@ -80,7 +81,7 @@ int exec_fork(pid_t pid, int *status, char *err_msg, int span, char **cmds,
 		else if (pid == 0)
 		{
 			execve(*cmds, cmds, envp);
-			err_msg = _generate_error(cmds, av, count), errno = 127,
+			err_msg = _generate_error(cmds, av, count),
 					perror(err_msg), free(err_msg);
 			exit_handler(1, 0, span, cmds, envp, input, av, count); }
 		if (waitpid(pid, status, 0) == -1)

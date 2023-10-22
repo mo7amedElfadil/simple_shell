@@ -14,7 +14,9 @@ char *alias(int span, char **cmds, char **envp)
 	int i = 1, len = 0;
 	char *name = NULL, *value = NULL, not[1000];
 
-	(void)envp;
+	if (!envp)
+	{	*cmds = _cmd_replace(*cmds, _find_alias(srch, *cmds));
+		return (*cmds);	}
 	if (!cmds && head)
 	{	free_linked_list(head), head = NULL;
 		return (0); }
@@ -31,12 +33,10 @@ char *alias(int span, char **cmds, char **envp)
 			else
 				value = strtok(NULL, " ");
 			if (!value)
-			{
 				print_linked_list(name, head);
-			}
 			else
-			{
-				while (srch && srch->name && strcmp(name, srch->name))
+			{	srch = head;
+				while (srch && srch->name && _strcmp(name, srch->name))
 					srch = srch->next;
 				if (!srch)
 					if (!head)
@@ -50,19 +50,7 @@ char *alias(int span, char **cmds, char **envp)
 			i++; }
 	}
 	return (0); }
-/**
- * _list_value - returns value
- * @head: head of list
- * @name: name of member
- * Return: value of member
- */
-char *_list_value(al_list *head, char *name)
-{
-	while (head && _strcmp(head->name, name))
-		head = head->next;
-	return (head->value);
 
-}
 /**
  * add_node_end - adds a new node at the end of a al_list of alias.
  * @head: ptr to head ptr of the linked list
