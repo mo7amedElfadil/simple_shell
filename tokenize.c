@@ -16,9 +16,10 @@ int _tokenize(int term_f, char **envp, char **av, size_t counter)
 	do {
 		if (term_f)
 			_put_buffer("($) ");
-
+		errno = 0;
 		ret = _tokenize_newline(&line, term_f, envp, av, counter);
 		counter++;
+		printf("getline line : %d\n", line);
 	} while (line > 0);
 	return (ret);
 }

@@ -63,3 +63,18 @@ char *_custom_err(char *err_msg, char *msg)
 	_strcat(err_msg, msg);
 	return (err_msg);
 }
+/**
+ * _cd_err - print to stdout a personnalized error msg for cd to unknown directory.
+ * @err_msg: from the genertor error
+ * @msg: to be added manually.
+ * Return: the new customized error message.
+ */
+char *_cd_err(char *err_msg, char *msg, char **cmds)
+{
+	err_msg = _realloc(err_msg, 100, 100 + _strlen(msg) + 1);
+	_strcat(err_msg, ": ");
+	_strcat(err_msg, msg);
+	_strcat(err_msg, cmds[1]);
+	_strcat(err_msg, "\n");
+	return (err_msg);
+}

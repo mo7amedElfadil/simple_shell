@@ -41,6 +41,9 @@ int _execute(int span, char **cmds, char *input,
 			if (errno == ENOENT)
 				err_msg = _custom_err(_generate_error(cmds, av, count),
 						"not found\n"), errno = 127, _put_error(err_msg), free(err_msg);
+			else if (errno == 9)
+				err_msg = _cd_err(_generate_error(cmds, av, count),
+						"can't cd to ", cmds), errno = 127, _put_error(err_msg), free(err_msg);
 			else if (errno)
 				err_msg = _generate_error(cmds, av, count), errno = 127,
 						_put_error(err_msg), free(err_msg);

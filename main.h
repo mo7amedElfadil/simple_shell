@@ -119,6 +119,7 @@ int cd_cmd_sup(char *target, char *previous, char **envp);
 int is_v_path(const char *path);
 int cd_cmd_par(char *target, char **envp);
 char *get_envalue(char *var, char **envp, int len);
+char *_cd_err(char *err_msg, char *msg, char **cmds);
 
 
 int _setenv_cmd(int argc, char **argv, char **envp);

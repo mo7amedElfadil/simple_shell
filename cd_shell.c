@@ -5,7 +5,7 @@
  * cd_cmd - execute the cd command.
  * @argc: tem for number of argument.
  * @argv: temporary variable for tokens.
- * @envp: envirement variable.
+ * @ep: envirement variable.
  * Return: 0 if succeeded, -1 in case of failure.
  */
 int cd_cmd(int argc, char *argv[], char *ep[])
@@ -36,7 +36,7 @@ int cd_cmd(int argc, char *argv[], char *ep[])
 			if (cd_cmd_sup(S_argv, PWD, ep) == -1)
 				return (-1); }
 		else /*No such file or directory*/
-		{errno = ENOENT, _free_cd(3, PWD, OD, HOME);
+		{errno = 9, _free_cd(3, PWD, OD, HOME);
 			return (-1); }
 	}
 	else if (argc == 1 && strcmp("cd", F_argv) == 0)
