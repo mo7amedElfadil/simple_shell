@@ -74,13 +74,16 @@ void _free_cd(int n, ...);
 int is_nulled(char **cmds);
 
 int _tokenize(int term_f, char **envp, char **av,
-		size_t count, int ac, FILE *s);
+		size_t count, int ac, char **cmd_lines);
 int _tokenize_newline(int *line, int term_f, char **envp,
-		char **av, size_t counter, int ac, FILE *s);
+		char **av, size_t counter, int ac, char **cmd_lines);
 char **_tokenize_n_al(int line, char *input, char **envp);
 char *var_expansion(char *var, char **envp);
 int cmds_n_elm(char **cmds);
 
+char **strtow(char *str, char del);
+int word_count(char *str, char del);
+void open_error(char **av, size_t counter);
 
 char *cmd_path(char **envp, char *cmd);
 int _path_cat(char **envp, char **cmds);
@@ -110,7 +113,8 @@ int is_cmd(char *cmd, char *cmd_name);
 
 char *_generate_error(char **cmds, char **av, size_t counter);
 char *_custom_err(char *err_msg, char *msg);
-void open_error(char **av, size_t counter);
+
+
 
 
 void exit_handler(int line, int term_f, int span,

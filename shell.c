@@ -10,42 +10,38 @@
 int main(int ac, char **av, char *envp_origin[])
 {
 	size_t counter = 0;
-	char **envp = NULL;
-	int fd = 0;
-	FILE *stream = NULL;
+	char **envp = NULL, **cmd_lines = NULL, *buf;
+	int fd = 0, term_f = 0, err = 0;
+	ssize_t stream = 0;
 
 	envp = copy_envp_main(envp_origin);
 	if (!envp)
 		exit_handler(0, 1, 0, 0, 0, 0, av, 0);
 	if (ac == 2)
 	{
+		buf = malloc(sizeof(char) * 20 * BUFF);
 		fd = open(av[1], O_RDONLY);
 		if (fd == -1)
 		{
 			open_error(av, counter), errno = 127;
 			exit(errno);
 		}
-		stream = fdopen(fd, "r");
+		stream = read(fd, buf, 20 * BUFF);
 		if (!stream)
-		{
-			perror("error 2"), close(fd);
-			exit(EXIT_FAILURE);
-		}
+			perror("error 2"), close(fd), exit(EXIT_FAILURE);
+		cmd_lines = strtow(buf, '\n'), free(buf), close(fd);
 	}
 	while (1)
 	{
-		int term_f = 0, err = 0;
-
-		counter++;
-		term_f = isatty(STDIN_FILENO), errno = 0;
-		err = _tokenize(term_f, envp, av, counter, ac, stream);
+		term_f = 0, err = 0;
+		counter++, term_f = isatty(STDIN_FILENO), errno = 0;
+		err = _tokenize(term_f, envp, av, counter, ac, cmd_lines);
 		if (!term_f || err == -1)
 			break;
 	}
 	alias(0, NULL, envp);
 	if (envp)
 		_free_envp(envp);
-	fclose(stream);
 	close(fd);
 
 	return (0);

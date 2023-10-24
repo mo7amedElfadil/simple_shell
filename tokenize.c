@@ -7,12 +7,12 @@
  * @av: argument vector
  * @count: the counter.
  * @ac: arg counter from main.
- * @s: file stream from main funtion using fdopen.
+ * @cmd_lines: command per line from the file av [1].
  * Return: 1 when exit has been input
  *			0 otherwise
  */
 int _tokenize(int term_f, char **envp, char **av,
-		size_t count, int ac, FILE *s)
+		size_t count, int ac, char **cmd_lines)
 {
 	int line = 0, ret = 0;
 
@@ -26,7 +26,7 @@ int _tokenize(int term_f, char **envp, char **av,
 		if (term_f)
 			_put_buffer("($) ");
 		/* errno = 0; */
-		ret = _tokenize_newline(&line, term_f, envp, av, count, ac, s);
+		ret = _tokenize_newline(&line, term_f, envp, av, count, ac, cmd_lines);
 		count++;
 	} while (line > 0);
 	return (ret);
@@ -41,13 +41,13 @@ int _tokenize(int term_f, char **envp, char **av,
  * @av: argument vector
  * @counter: the counter
  * @ac: arg counter from main.
- * @s: file stream from main funtion using fdopen.
+ * @cmd_lines: command per line from the file av [1].
  * Return: 1 when exit has been input
  *			0 otherwise
  */
 
 int _tokenize_newline(int *line, int term_f, char **envp,
-		char **av, size_t counter, int ac, FILE *s)
+		char **av, size_t counter, int ac, char **cmd_lines)
 {
 	int span = 0;
 	size_t len = BUFF;
@@ -55,7 +55,14 @@ int _tokenize_newline(int *line, int term_f, char **envp,
 
 	if (ac == 2)
 	{
-		*line = getline(&input, &len, s);
+		static int cnt;
+
+		if (!cmd_lines[cnt])
+		{
+			exit(0);
+		}
+		*line = _strlen(cmd_lines[cnt]);
+		input = cmd_lines[cnt], cnt++;
 		term_f = 0;
 	}
 	else
@@ -67,7 +74,7 @@ int _tokenize_newline(int *line, int term_f, char **envp,
 	if (!term_f)
 	{
 		_execute(span, cmds, input, envp, av, counter, term_f);
-		_tokenize(term_f, envp, av, counter, ac, s);
+		_tokenize(term_f, envp, av, counter, ac, cmd_lines);
 		exit_handler(1, 0, 0, NULL, NULL, NULL, av, counter);
 	}
 	return (_execute(span, cmds, input, envp, av, counter, term_f));

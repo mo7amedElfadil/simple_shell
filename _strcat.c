@@ -50,3 +50,75 @@ char *_strncat(char *dest, char *src, int n)
 	dest[l + m] = 0;
 	return (dest);
 }
+/**
+ * strtow - splits a string into words.
+ * @str: string to split
+ * @del: delimter
+ * Return: ptr to array of words (Success)
+ *		   NULL (failure)
+ */
+char **strtow(char *str, char del)
+{
+	int words, i, l;
+	char **ptr = NULL;
+
+	words = word_count(str, del);
+	if (!str || words == 0 || _strlen(str) == 0)
+	{
+		return (NULL);
+	}
+	ptr = (char **)malloc((words + 1) * sizeof(*ptr));
+	for (i = 0; i < words && *str ; i++)
+	{
+		for (; *str && *str == del; str++)
+		{
+		}
+		if (!*str)
+			break;
+		l = 0;
+		while (str[l] != del && str[l])
+		{
+			l++;
+		}
+
+
+		ptr[i] = (char *)malloc((l + 1) * sizeof(**ptr));
+		if (!ptr[i])
+		{
+			for (; i >= 0;)
+				free(ptr[--i]);
+			free(ptr);
+			return (NULL);
+		}
+		_strncat(ptr[i], str, l);
+		_strncat(ptr[i], "\n", l);
+		str += l;
+	}
+	ptr[i] = NULL;
+
+	return (ptr);
+}
+/**
+ * word_count - function that counts number of words in a string,
+ * @str: pointer to the string.
+ * @del: delimter
+ * Return: the number of words.
+ */
+
+int word_count(char *str, char del)
+{
+	int i, l, n = 0;
+	char l_char;
+
+	l = _strlen(str);
+	l_char = str[0];
+	for (i = 0; i <= l; i++)
+	{
+		if ((str[i] == del || str[i] == '\0') && l_char != del)
+		{
+			n++;
+		}
+		l_char = str[i];
+	}
+	return (n);
+}
