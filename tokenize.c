@@ -7,12 +7,13 @@
  * @av: argument vector
  * @count: the counter.
  * @ac: arg counter from main.
- * @cmd_lines: command per line from the file av [1].
+ * @s: file stream
+ * @fd: file descriptor
  * Return: 1 when exit has been input
  *			0 otherwise
  */
 int _tokenize(int term_f, char **envp, char **av,
-		size_t count, int ac, char **cmd_lines)
+		size_t count, int ac, FILE *s, int fd)
 {
 	int line = 0, ret = 0;
 
@@ -20,13 +21,11 @@ int _tokenize(int term_f, char **envp, char **av,
 	{
 		term_f = 0;
 	}
-
-
 	do {
 		if (term_f)
 			_put_buffer("($) ");
-		/* errno = 0; */
-		ret = _tokenize_newline(&line, term_f, envp, av, count, ac, cmd_lines);
+		errno = 0;
+		ret = _tokenize_newline(&line, term_f, envp, av, count, ac, s, fd);
 		count++;
 	} while (line > 0);
 	return (ret);
@@ -41,44 +40,42 @@ int _tokenize(int term_f, char **envp, char **av,
  * @av: argument vector
  * @counter: the counter
  * @ac: arg counter from main.
- * @cmd_lines: command per line from the file av [1].
+ * @s: file stream
+ * @fd: file descriptor
  * Return: 1 when exit has been input
  *			0 otherwise
  */
 
 int _tokenize_newline(int *line, int term_f, char **envp,
-		char **av, size_t counter, int ac, char **cmd_lines)
+		char **av, size_t counter, int ac, FILE *s, int fd)
 {
 	int span = 0;
 	size_t len = BUFF;
 	char *input = malloc(len), **cmds = NULL;
 
-	if (ac == 2)
+	if (ac == 2 && s && fd)
 	{
-		static int cnt;
-
-		if (!cmd_lines[cnt])
-		{
-			exit(0);
-		}
-		*line = _strlen(cmd_lines[cnt]);
-		input = cmd_lines[cnt], cnt++;
+		*line = getline(&input, &len, s);
 		term_f = 0;
+		errno = 0;
 	}
 	else
 		*line = getline(&input, &len, stdin);
 	if (*line < 0 || !_strncmp(input, "exit", 4))
+	{
+		if (fd)
+			fclose(s);
 		exit_handler(*line, term_f, -1, cmds, envp, input, av, counter);
+	}
 	cmds = _tokenize_n_al(*line, input, envp);
 	span = cmds_n_elm(cmds);
 	if (!term_f)
 	{
 		_execute(span, cmds, input, envp, av, counter, term_f);
-		_tokenize(term_f, envp, av, counter, ac, cmd_lines);
+		_tokenize(term_f, envp, av, counter, ac, s, fd);
 		exit_handler(1, 0, 0, NULL, NULL, NULL, av, counter);
 	}
 	return (_execute(span, cmds, input, envp, av, counter, term_f));
-
 }
 
 /**
