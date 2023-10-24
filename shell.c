@@ -94,8 +94,8 @@ void open_error(char **av, size_t counter)
 	_strcat(err_msg, ": ");
 	_strcat(err_msg, "Can't open ");
 	_strcat(err_msg, av[1]);
-	_put_buffer(err_msg);
-	_put_buffer("\n");
+	_strcat(err_msg, "\n");
+	_put_error(err_msg);
 	free(ul);
 	free(err_msg);
 }
