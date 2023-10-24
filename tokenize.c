@@ -19,28 +19,6 @@ int _tokenize(int term_f, char **envp, char **av,
 	if (ac == 2)
 	{
 		term_f = 0;
-#if 0
-		fd = open(av[1], O_RDONLY);
-		if (fd == -1)
-		{
-			perror("Error1");
-			return (fd);
-		}
-		size_t len = BUFF;
-		char *input = malloc(10 * len);
-		ssize_t ret_read = 0;
-
-		ret_read = read(fd, input, 10 * len);
-		if (ret_read == -1)
-		{
-			perror("Error2");
-			return (ret_read);
-		}
-		printf("%s", input);
-		free(input);
-		close(fd);
-		return (-1);
-#endif
 	}
 
 
@@ -77,16 +55,6 @@ int _tokenize_newline(int *line, int term_f, char **envp,
 
 	if (ac == 2)
 	{
-#if 0
-		FILE *stream = NULL;
-
-		stream = fdopen(fd, "r");
-		if (!stream)
-		{
-			perror("error 3");
-			exit(EXIT_FAILURE);
-		}
-#endif
 		*line = getline(&input, &len, s);
 		term_f = 0;
 	}
