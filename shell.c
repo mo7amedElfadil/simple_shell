@@ -11,25 +11,42 @@ int main(int ac, char **av, char *envp_origin[])
 {
 	size_t counter = 0;
 	char **envp = NULL;
+	int fd = 0;
+	FILE *stream = NULL;
 
 	envp = copy_envp_main(envp_origin);
 	if (!envp)
 		exit_handler(0, 1, 0, 0, 0, 0, av, 0);
-	(void)ac, (void)av;
+	if (ac == 2)
+	{
+		fd = open(av[1], O_RDONLY);
+		if (fd == -1)
+		{
+			open_error(av, counter), errno = 127;
+			exit(errno);
+		}
+		stream = fdopen(fd, "r");
+		if (!stream)
+		{
+			perror("error 2"), close(fd);
+			exit(EXIT_FAILURE);
+		}
+	}
 	while (1)
 	{
 		int term_f = 0, err = 0;
 
 		counter++;
-		term_f = isatty(STDIN_FILENO);
-		errno = 0;
-		err = _tokenize(term_f, envp, av, counter);
+		term_f = isatty(STDIN_FILENO), errno = 0;
+		err = _tokenize(term_f, envp, av, counter, ac, stream);
 		if (!term_f || err == -1)
 			break;
 	}
 	alias(0, NULL, envp);
 	if (envp)
 		_free_envp(envp);
+	fclose(stream);
+	close(fd);
 
 	return (0);
 }
@@ -64,4 +81,26 @@ char **copy_envp_main(char **envp)
 	}
 
 	return (envp);
+}
+/**
+ * open_error - generate error message for open funtion
+ * @counter: the counter
+ * @av: argument vector
+ * Return:NONE.
+ */
+void open_error(char **av, size_t counter)
+{
+	char *err_msg = malloc(100), *ul = NULL;
+
+	_strcpy(err_msg, av[0]);
+	_strcat(err_msg, ": ");
+	ul = _ultoa(counter);
+	_strcat(err_msg, ul);
+	_strcat(err_msg, ": ");
+	_strcat(err_msg, "Can't open ");
+	_strcat(err_msg, av[1]);
+	_put_buffer(err_msg);
+	_put_buffer("\n");
+	free(ul);
+	free(err_msg);
 }

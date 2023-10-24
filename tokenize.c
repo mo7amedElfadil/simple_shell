@@ -5,20 +5,51 @@
  * @term_f: terminal flag (isatty)
  * @envp: environmental pointer
  * @av: argument vector
- * @counter: the counter
+ * @count: the counter.
+ * @ac: arg counter from main.
+ * @s: file stream from main funtion using fdopen.
  * Return: 1 when exit has been input
  *			0 otherwise
  */
-int _tokenize(int term_f, char **envp, char **av, size_t counter)
+int _tokenize(int term_f, char **envp, char **av,
+		size_t count, int ac, FILE *s)
 {
 	int line = 0, ret = 0;
+
+	if (ac == 2)
+	{
+		term_f = 0;
+#if 0
+		fd = open(av[1], O_RDONLY);
+		if (fd == -1)
+		{
+			perror("Error1");
+			return (fd);
+		}
+		size_t len = BUFF;
+		char *input = malloc(10 * len);
+		ssize_t ret_read = 0;
+
+		ret_read = read(fd, input, 10 * len);
+		if (ret_read == -1)
+		{
+			perror("Error2");
+			return (ret_read);
+		}
+		printf("%s", input);
+		free(input);
+		close(fd);
+		return (-1);
+#endif
+	}
+
 
 	do {
 		if (term_f)
 			_put_buffer("($) ");
 		/* errno = 0; */
-		ret = _tokenize_newline(&line, term_f, envp, av, counter);
-		counter++;
+		ret = _tokenize_newline(&line, term_f, envp, av, count, ac, s);
+		count++;
 	} while (line > 0);
 	return (ret);
 }
@@ -31,18 +62,36 @@ int _tokenize(int term_f, char **envp, char **av, size_t counter)
  * @envp: environmental pointer
  * @av: argument vector
  * @counter: the counter
+ * @ac: arg counter from main.
+ * @s: file stream from main funtion using fdopen.
  * Return: 1 when exit has been input
  *			0 otherwise
  */
 
-int _tokenize_newline(int *line, int term_f,
-		char **envp, char **av, size_t counter)
+int _tokenize_newline(int *line, int term_f, char **envp,
+		char **av, size_t counter, int ac, FILE *s)
 {
 	int span = 0;
 	size_t len = BUFF;
 	char *input = malloc(len), **cmds = NULL;
 
-	*line = getline(&input, &len, stdin);
+	if (ac == 2)
+	{
+#if 0
+		FILE *stream = NULL;
+
+		stream = fdopen(fd, "r");
+		if (!stream)
+		{
+			perror("error 3");
+			exit(EXIT_FAILURE);
+		}
+#endif
+		*line = getline(&input, &len, s);
+		term_f = 0;
+	}
+	else
+		*line = getline(&input, &len, stdin);
 	if (*line < 0 || !_strncmp(input, "exit", 4))
 		exit_handler(*line, term_f, -1, cmds, envp, input, av, counter);
 	cmds = _tokenize_n_al(*line, input, envp);
@@ -50,7 +99,7 @@ int _tokenize_newline(int *line, int term_f,
 	if (!term_f)
 	{
 		_execute(span, cmds, input, envp, av, counter, term_f);
-		_tokenize(term_f, envp, av, counter);
+		_tokenize(term_f, envp, av, counter, ac, s);
 		exit_handler(1, 0, 0, NULL, NULL, NULL, av, counter);
 	}
 	return (_execute(span, cmds, input, envp, av, counter, term_f));

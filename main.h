@@ -15,6 +15,9 @@
 #include <errno.h>
 #include <limits.h>
 
+#include <fcntl.h>
+#include <sys/types.h>
+#include <sys/uio.h>
 /* dont need these yet */
 /* #include <errno.h> */
 /* #include <signal.h> */
@@ -70,9 +73,10 @@ void _free_envp(char **envp);
 void _free_cd(int n, ...);
 int is_nulled(char **cmds);
 
-int _tokenize(int term_f, char **envp, char **av, size_t counter);
-int _tokenize_newline(int *line, int term_f,
-		char **envp, char **av, size_t counter);
+int _tokenize(int term_f, char **envp, char **av,
+		size_t count, int ac, FILE *s);
+int _tokenize_newline(int *line, int term_f, char **envp,
+		char **av, size_t counter, int ac, FILE *s);
 char **_tokenize_n_al(int line, char *input, char **envp);
 char *var_expansion(char *var, char **envp);
 int cmds_n_elm(char **cmds);
@@ -106,6 +110,7 @@ int is_cmd(char *cmd, char *cmd_name);
 
 char *_generate_error(char **cmds, char **av, size_t counter);
 char *_custom_err(char *err_msg, char *msg);
+void open_error(char **av, size_t counter);
 
 
 void exit_handler(int line, int term_f, int span,
